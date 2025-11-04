@@ -1,0 +1,79 @@
+{
+  "generated_on": "2025-11-04T07:51:26.501446",
+  "date": "2025-11-04",
+  "todos": [
+    {
+      "category": "\ud83c\udf05 Morning Routine",
+      "tasks": [
+        {
+          "task": "Wake up by 7:00\u202fAM",
+          "completed": false
+        },
+        {
+          "task": "15\u2011min meditation",
+          "completed": false
+        },
+        {
+          "task": "Breakfast (e.g., 2 boiled eggs, 1 cup dal, 100\u202fg paneer, 250\u202fml milk) \u2013 ~30\u202fg protein, start water intake",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83d\udcda Academic",
+      "tasks": [
+        {
+          "task": "Attend CN class 09:00\u201110:00",
+          "completed": false
+        },
+        {
+          "task": "Attend ToC lecture 10:00\u201111:00",
+          "completed": false
+        },
+        {
+          "task": "Attend ToC tutorial 11:00\u201112:00",
+          "completed": false
+        },
+        {
+          "task": "Attend OC lecture 12:00\u201113:00",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83c\udfaf Learning",
+      "tasks": [
+        {
+          "task": "Study TypeScript fundamentals (strict mode, utility types, generics) \u2013 30\u202fmin",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83d\udcaa Fitness",
+      "tasks": [
+        {
+          "task": "Upper\u2011body strength workout 17:00\u201118:15 (5\u202fmin jump rope, incline dumbbell press 4\u00d78, seated cable row 3\u00d710) + post\u2011workout protein shake (250\u202fml milk + 30\u202fg paneer) \u2013 ~20\u202fg protein",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83c\udf19 Evening Routine",
+      "tasks": [
+        {
+          "task": "Dinner (e.g., 150\u202fg paneer curry + 1 cup dal + mixed veg salad) \u2013 ~38\u202fg protein, finish water intake for the day",
+          "completed": false
+        },
+        {
+          "task": "Social media max 30\u202fmin (after 20:00)",
+          "completed": false
+        },
+        {
+          "task": "Sleep by 11:00\u202fPM (aim for 7\u202fh)",
+          "completed": false
+        }
+      ]
+    }
+  ]
+}

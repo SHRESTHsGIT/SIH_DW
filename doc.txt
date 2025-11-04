@@ -1,0 +1,2112 @@
+# Face Recognition Attendance System - Complete Implementation
+
+## requirements.txt
+```
+fastapi==0.104.1
+uvicorn==0.24.0
+streamlit==1.28.1
+pandas==2.1.3
+opencv-python==4.8.1.78
+deepface==0.0.88
+tensorflow==2.16.1
+qrcode[pil]==7.4.2
+pyzbar==0.1.9
+pillow==10.1.0
+python-multipart==0.0.6
+```
+
+## config.py
+```python
+import os
+import pandas as pd
+import qrcode
+from datetime import datetime
+
+def setup_directories():
+    """Create directory structure and initialize CSV files"""
+    
+    # Base directory structure
+    base_dir = "data"
+    os.makedirs(base_dir, exist_ok=True)
+    
+    # Create branches directory and year subdirectories
+    branches = ["CSH", "CSA", "CSD", "CSB"]  # Different branch codes
+    years = ["2022", "2023", "2024", "2025"]
+    
+    for branch in branches:
+        for year in years:
+            branch_year_dir = os.path.join(base_dir, "branches", branch, year)
+            os.makedirs(branch_year_dir, exist_ok=True)
+            os.makedirs(os.path.join(branch_year_dir, "faces"), exist_ok=True)
+            os.makedirs(os.path.join(branch_year_dir, "qrcodes"), exist_ok=True)
+    
+    # Initialize branches.csv ONLY if it doesn't exist
+    branches_path = os.path.join(base_dir, "branches.csv")
+    if not os.path.exists(branches_path):
+        branches_data = [
+            ["CSH", "CSE(HCI & Gaming Tech)"],
+            ["CSA", "CSE(AIML)"],
+            ["CSD", "CSE(Data Science)"],
+            ["CSB", "CSE(Big Data Analytics)"]
+        ]
+        branches_df = pd.DataFrame(branches_data, columns=["branch_code", "branch_name"])
+        branches_df.to_csv(branches_path, index=False)
+        print("✅ Created branches.csv")
+    else:
+        print("📁 branches.csv already exists - keeping existing data")
+    
+    # Initialize teachers.csv ONLY if it doesn't exist
+    teachers_path = os.path.join(base_dir, "teachers.csv")
+    if not os.path.exists(teachers_path):
+        teachers_data = [
+            ["T001", "Prof. Sharma", "password123"],
+            ["T002", "Ms. Rao", "password456"],
+            ["T003", "Dr. Kumar", "teacher789"],
+            ["T004", "Prof. Singh", "prof123"]
+        ]
+        teachers_df = pd.DataFrame(teachers_data, columns=["teacher_id", "teacher_name", "password"])
+        teachers_df.to_csv(teachers_path, index=False)
+        print("✅ Created teachers.csv")
+    else:
+        print("📁 teachers.csv already exists - keeping existing data")
+    
+    # Initialize demo students and empty CSV files for each branch-year ONLY if they don't exist
+    for branch in branches:
+        for year in years:
+            branch_year_dir = os.path.join(base_dir, "branches", branch, year)
+            
+            # Create empty students.csv ONLY if it doesn't exist
+            students_path = os.path.join(branch_year_dir, "students.csv")
+            if not os.path.exists(students_path):
+                students_columns = ["roll_no", "name", "face_path", "qr_code_path", "registered_on", "password"]
+                students_df = pd.DataFrame(columns=students_columns)
+                students_df.to_csv(students_path, index=False)
+                print(f"✅ Created students.csv for {branch}/{year}")
+            
+            # Create empty attendance.csv ONLY if it doesn't exist
+            attendance_path = os.path.join(branch_year_dir, "attendance.csv")
+            if not os.path.exists(attendance_path):
+                attendance_columns = ["roll_no", "name"]
+                attendance_df = pd.DataFrame(columns=attendance_columns)
+                attendance_df.to_csv(attendance_path, index=False)
+                print(f"✅ Created attendance.csv for {branch}/{year}")
+            
+            # Create empty stats.csv ONLY if it doesn't exist
+            stats_path = os.path.join(branch_year_dir, "stats.csv")
+            if not os.path.exists(stats_path):
+                stats_columns = ["roll_no", "name", "present_days", "absent_days", "total_days", "attendance_pct", "last_present", "last_absent"]
+                stats_df = pd.DataFrame(columns=stats_columns)
+                stats_df.to_csv(stats_path, index=False)
+                print(f"✅ Created stats.csv for {branch}/{year}")
+            
+            # Create empty sessions.csv ONLY if it doesn't exist
+            sessions_path = os.path.join(branch_year_dir, "sessions.csv")
+            if not os.path.exists(sessions_path):
+                sessions_columns = ["session_id", "teacher_id", "branch_code", "year", "start_time", "deadline_time", "status"]
+                sessions_df = pd.DataFrame(columns=sessions_columns)
+                sessions_df.to_csv(sessions_path, index=False)
+                print(f"✅ Created sessions.csv for {branch}/{year}")
+    
+    print("✅ Directory structure and missing CSV files created successfully!")
+    print("📁 Existing data preserved - no overwriting!")
+    print("📁 Available branches: CSH, CSA, CSD, CSB")
+    print("📅 Available years: 2022, 2023, 2024, 2025")
+    print("🎓 Roll number format: BT[YY][BRANCH][XXX] (e.g., BT23CSH013)")
+
+if __name__ == "__main__":
+    setup_directories()
+```
+
+## api/models.py
+```python
+from pydantic import BaseModel
+from datetime import datetime
+from typing import Optional
+
+class TeacherLogin(BaseModel):
+    teacher_id: str
+    password: str
+
+class StudentLogin(BaseModel):
+    roll_no: str
+    password: str
+
+class StudentRegister(BaseModel):
+    roll_no: str
+    name: str
+    password: str
+    branch_code: str
+
+class SessionStart(BaseModel):
+    teacher_id: str
+    branch_code: str
+    year: str
+    duration_minutes: int = 60
+
+class AttendanceMark(BaseModel):
+    roll_no: str
+    session_id: str
+
+class FaceAttendance(BaseModel):
+    session_id: str
+    # image will be sent as form data
+
+class QRAttendance(BaseModel):
+    qr_data: str
+    session_id: str
+```
+
+## services/data_service.py
+```python
+import pandas as pd
+import os
+from datetime import datetime
+from typing import List, Dict, Optional
+
+class DataService:
+    def __init__(self):
+        self.base_dir = "data"
+    
+    def get_branches(self) -> List[Dict]:
+        """Get all available branches"""
+        branches_path = os.path.join(self.base_dir, "branches.csv")
+        if os.path.exists(branches_path):
+            df = pd.read_csv(branches_path)
+            return df.to_dict('records')
+        return []
+    
+    def verify_teacher(self, teacher_id: str, password: str) -> bool:
+        """Verify teacher credentials"""
+        teachers_path = os.path.join(self.base_dir, "teachers.csv")
+        if os.path.exists(teachers_path):
+            df = pd.read_csv(teachers_path)
+            teacher = df[(df['teacher_id'] == teacher_id) & (df['password'] == password)]
+            return not teacher.empty
+        return False
+    
+    def verify_student(self, roll_no: str, password: str) -> Optional[Dict]:
+        """Verify student credentials and return student info"""
+        # Extract branch and year from roll number (e.g., BT23CSH013)
+        if len(roll_no) < 8:
+            print(f"❌ Invalid roll number length: {roll_no}")
+            return None
+        
+        try:
+            year = "20" + roll_no[2:4]  # BT23 -> 2023
+            branch = roll_no[4:7]      # CSH
+            print(f"🔍 Looking for student {roll_no} in {branch}/{year}")
+        except Exception as e:
+            print(f"❌ Error parsing roll number {roll_no}: {e}")
+            return None
+        
+        students_path = os.path.join(self.base_dir, "branches", branch, year, "students.csv")
+        print(f"📁 Checking file: {students_path}")
+        
+        if os.path.exists(students_path):
+            df = pd.read_csv(students_path)
+            print(f"📊 Found {len(df)} students in CSV")
+            print(f"🔍 Looking for roll_no: {roll_no} and password: {password}")
+            
+            # Debug: print all students
+            print("📝 Students in CSV:")
+            for _, student in df.iterrows():
+                print(f"   - {student.get('roll_no', 'N/A')} | {student.get('name', 'N/A')}")
+            
+            student = df[(df['roll_no'] == roll_no) & (df['password'] == password)]
+            
+            if not student.empty:
+                student_dict = student.iloc[0].to_dict()
+                student_dict['branch'] = branch
+                student_dict['year'] = year
+                print(f"✅ Student found: {student_dict['name']}")
+                return student_dict
+            else:
+                print(f"❌ No matching student found for {roll_no}")
+                # Check if roll number exists with different password
+                roll_exists = df[df['roll_no'] == roll_no]
+                if not roll_exists.empty:
+                    print("❌ Roll number exists but password incorrect")
+                else:
+                    print("❌ Roll number not found in database")
+        else:
+            print(f"❌ Students file not found: {students_path}")
+        
+        return None
+    
+    def register_student(self, roll_no: str, name: str, password: str, branch_code: str) -> bool:
+        """Register a new student"""
+        # Extract year from roll number
+        try:
+            year = "20" + roll_no[2:4]
+            print(f"📝 Registering student {roll_no} in {branch_code}/{year}")
+        except Exception as e:
+            print(f"❌ Error parsing roll number: {e}")
+            return False
+        
+        students_path = os.path.join(self.base_dir, "branches", branch_code, year, "students.csv")
+        print(f"📁 Student file path: {students_path}")
+        
+        # Check if student already exists
+        if os.path.exists(students_path):
+            df = pd.read_csv(students_path)
+            if roll_no in df['roll_no'].values:
+                print(f"❌ Student {roll_no} already exists")
+                return False
+            print(f"📊 Current students in file: {len(df)}")
+        else:
+            print("📝 Creating new students file")
+            df = pd.DataFrame(columns=["roll_no", "name", "face_path", "qr_code_path", "registered_on", "password"])
+        
+        # Add new student
+        face_path = f"data/branches/{branch_code}/{year}/faces/{roll_no}.jpg"
+        qr_path = f"data/branches/{branch_code}/{year}/qrcodes/{roll_no}.png"
+        
+        new_student = {
+            "roll_no": roll_no,
+            "name": name,
+            "face_path": face_path,
+            "qr_code_path": qr_path,
+            "registered_on": datetime.now().strftime("%Y-%m-%d"),
+            "password": password
+        }
+        
+        # Use pd.concat instead of append (deprecated)
+        new_row_df = pd.DataFrame([new_student])
+        df = pd.concat([df, new_row_df], ignore_index=True)
+        
+        # Save the updated dataframe
+        df.to_csv(students_path, index=False)
+        print(f"✅ Student {roll_no} registered successfully")
+        
+        # Initialize in attendance.csv
+        self._add_student_to_attendance(roll_no, name, branch_code, year)
+        
+        # Initialize in stats.csv
+        self._add_student_to_stats(roll_no, name, branch_code, year)
+        
+        return True
+    
+    def _add_student_to_attendance(self, roll_no: str, name: str, branch_code: str, year: str):
+        """Add student to attendance.csv"""
+        attendance_path = os.path.join(self.base_dir, "branches", branch_code, year, "attendance.csv")
+        
+        if os.path.exists(attendance_path):
+            df = pd.read_csv(attendance_path)
+        else:
+            df = pd.DataFrame(columns=["roll_no", "name"])
+        
+        if roll_no not in df['roll_no'].values:
+            new_row = {"roll_no": roll_no, "name": name}
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            df.to_csv(attendance_path, index=False)
+    
+    def _add_student_to_stats(self, roll_no: str, name: str, branch_code: str, year: str):
+        """Add student to stats.csv"""
+        stats_path = os.path.join(self.base_dir, "branches", branch_code, year, "stats.csv")
+        
+        if os.path.exists(stats_path):
+            df = pd.read_csv(stats_path)
+        else:
+            df = pd.DataFrame(columns=["roll_no", "name", "present_days", "absent_days", "total_days", "attendance_pct", "last_present", "last_absent"])
+        
+        if roll_no not in df['roll_no'].values:
+            new_row = {
+                "roll_no": roll_no,
+                "name": name,
+                "present_days": 0,
+                "absent_days": 0,
+                "total_days": 0,
+                "attendance_pct": 0.0,
+                "last_present": "",
+                "last_absent": ""
+            }
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            df.to_csv(stats_path, index=False)
+    
+    def get_students(self, branch_code: str, year: str) -> List[Dict]:
+        """Get all students for a branch-year"""
+        students_path = os.path.join(self.base_dir, "branches", branch_code, year, "students.csv")
+        if os.path.exists(students_path):
+            df = pd.read_csv(students_path)
+            return df.to_dict('records')
+        return []
+    
+    def mark_attendance(self, roll_no: str, branch_code: str, year: str, status: str = "Present") -> bool:
+        """Mark attendance for a student"""
+        attendance_path = os.path.join(self.base_dir, "branches", branch_code, year, "attendance.csv")
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        if os.path.exists(attendance_path):
+            df = pd.read_csv(attendance_path)
+        else:
+            return False
+        
+        # Add today's column if it doesn't exist
+        if today not in df.columns:
+            df[today] = "Absent"
+        
+        # Mark attendance
+        if roll_no in df['roll_no'].values:
+            df.loc[df['roll_no'] == roll_no, today] = status
+            df.to_csv(attendance_path, index=False)
+            
+            # Update stats
+            self._update_stats(roll_no, branch_code, year, status, today)
+            return True
+        
+        return False
+    
+    def _update_stats(self, roll_no: str, branch_code: str, year: str, status: str, date: str):
+        """Update student statistics"""
+        stats_path = os.path.join(self.base_dir, "branches", branch_code, year, "stats.csv")
+        
+        if os.path.exists(stats_path):
+            df = pd.read_csv(stats_path)
+            
+            if roll_no in df['roll_no'].values:
+                idx = df[df['roll_no'] == roll_no].index[0]
+                
+                if status == "Present":
+                    df.at[idx, 'present_days'] = df.at[idx, 'present_days'] + 1
+                    df.at[idx, 'last_present'] = date
+                else:
+                    df.at[idx, 'absent_days'] = df.at[idx, 'absent_days'] + 1
+                    df.at[idx, 'last_absent'] = date
+                
+                df.at[idx, 'total_days'] = df.at[idx, 'present_days'] + df.at[idx, 'absent_days']
+                
+                if df.at[idx, 'total_days'] > 0:
+                    df.at[idx, 'attendance_pct'] = (df.at[idx, 'present_days'] / df.at[idx, 'total_days']) * 100
+                
+                df.to_csv(stats_path, index=False)
+    
+    def get_attendance_data(self, branch_code: str, year: str) -> Dict:
+        """Get attendance data for a branch-year"""
+        attendance_path = os.path.join(self.base_dir, "branches", branch_code, year, "attendance.csv")
+        if os.path.exists(attendance_path):
+            df = pd.read_csv(attendance_path)
+            return df.to_dict('records')
+        return []
+    
+    def get_stats_data(self, branch_code: str, year: str) -> Dict:
+        """Get statistics data for a branch-year"""
+        stats_path = os.path.join(self.base_dir, "branches", branch_code, year, "stats.csv")
+        if os.path.exists(stats_path):
+            df = pd.read_csv(stats_path)
+            return df.to_dict('records')
+        return []
+```
+
+## services/session_service.py
+```python
+import pandas as pd
+import os
+from datetime import datetime, timedelta
+from typing import Dict, Optional, List
+
+class SessionService:
+    def __init__(self):
+        self.base_dir = "data"
+    
+    def start_session(self, teacher_id: str, branch_code: str, year: str, duration_minutes: int = 60) -> str:
+        """Start a new attendance session"""
+        # Check if there's already an active session
+        active_session = self.get_active_session(branch_code, year)
+        if active_session:
+            return None  # Session already active
+        
+        # Generate session ID
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        session_id = f"SES_{timestamp}_{branch_code}_{year}"
+        
+        start_time = datetime.now()
+        deadline_time = start_time + timedelta(minutes=duration_minutes)
+        
+        # Save session
+        sessions_path = os.path.join(self.base_dir, "branches", branch_code, year, "sessions.csv")
+        
+        if os.path.exists(sessions_path):
+            df = pd.read_csv(sessions_path)
+        else:
+            df = pd.DataFrame(columns=["session_id", "teacher_id", "branch_code", "year", "start_time", "deadline_time", "status"])
+        
+        new_session = {
+            "session_id": session_id,
+            "teacher_id": teacher_id,
+            "branch_code": branch_code,
+            "year": year,
+            "start_time": start_time.isoformat(),
+            "deadline_time": deadline_time.isoformat(),
+            "status": "active"
+        }
+        
+        df = pd.concat([df, pd.DataFrame([new_session])], ignore_index=True)
+        df.to_csv(sessions_path, index=False)
+        
+        return session_id
+    
+    def get_active_session(self, branch_code: str, year: str) -> Optional[Dict]:
+        """Get active session for a branch-year"""
+        sessions_path = os.path.join(self.base_dir, "branches", branch_code, year, "sessions.csv")
+        
+        if not os.path.exists(sessions_path):
+            return None
+        
+        df = pd.read_csv(sessions_path)
+        active_sessions = df[df['status'] == 'active']
+        
+        if active_sessions.empty:
+            return None
+        
+        # Check if session is still valid (not expired)
+        for _, session in active_sessions.iterrows():
+            deadline = datetime.fromisoformat(session['deadline_time'])
+            if datetime.now() < deadline:
+                return session.to_dict()
+            else:
+                # Session expired, close it
+                self.close_session(session['session_id'], branch_code, year, auto_close=True)
+        
+        return None
+    
+    def close_session(self, session_id: str, branch_code: str, year: str, auto_close: bool = False):
+        """Close a session and mark absent students"""
+        sessions_path = os.path.join(self.base_dir, "branches", branch_code, year, "sessions.csv")
+        
+        if os.path.exists(sessions_path):
+            df = pd.read_csv(sessions_path)
+            df.loc[df['session_id'] == session_id, 'status'] = 'closed'
+            df.to_csv(sessions_path, index=False)
+            
+            if auto_close:
+                # Mark all unmarked students as absent
+                self._mark_absent_students(branch_code, year)
+    
+    def _mark_absent_students(self, branch_code: str, year: str):
+        """Mark students who didn't attend as absent"""
+        from .data_service import DataService
+        data_service = DataService()
+        
+        # Get all students
+        students = data_service.get_students(branch_code, year)
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        attendance_path = os.path.join(self.base_dir, "branches", branch_code, year, "attendance.csv")
+        
+        if os.path.exists(attendance_path):
+            df = pd.read_csv(attendance_path)
+            
+            # Add today's column if it doesn't exist
+            if today not in df.columns:
+                df[today] = "Absent"
+            
+            # Mark all students who don't have attendance today as absent
+            for student in students:
+                roll_no = student['roll_no']
+                if roll_no in df['roll_no'].values:
+                    current_status = df.loc[df['roll_no'] == roll_no, today].iloc[0]
+                    if pd.isna(current_status) or current_status == "":
+                        data_service.mark_attendance(roll_no, branch_code, year, "Absent")
+            
+            df.to_csv(attendance_path, index=False)
+    
+    def get_session_attendance(self, session_id: str, branch_code: str, year: str) -> List[Dict]:
+        """Get attendance for a specific session"""
+        from .data_service import DataService
+        data_service = DataService()
+        
+        today = datetime.now().strftime("%Y-%m-%d")
+        attendance_data = data_service.get_attendance_data(branch_code, year)
+        
+        # Filter for today's attendance
+        result = []
+        for record in attendance_data:
+            if today in record:
+                result.append({
+                    "roll_no": record["roll_no"],
+                    "name": record["name"],
+                    "status": record.get(today, "Absent")
+                })
+        
+        return result
+```
+
+## services/face_service.py
+```python
+import cv2
+import os
+import numpy as np
+from deepface import DeepFace
+import tempfile
+from typing import Optional, Tuple
+
+class FaceService:
+    def __init__(self):
+        self.confidence_threshold = 0.6
+    
+    def save_face_image(self, image_bytes: bytes, roll_no: str, branch_code: str, year: str) -> bool:
+        """Save face image for a student"""
+        try:
+            # Create face directory path
+            face_dir = os.path.join("data", "branches", branch_code, year, "faces")
+            os.makedirs(face_dir, exist_ok=True)
+            
+            # Save image
+            face_path = os.path.join(face_dir, f"{roll_no}.jpg")
+            
+            # Convert bytes to image
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return False
+            
+            # Save image
+            success = cv2.imwrite(face_path, img)
+            return success
+            
+        except Exception as e:
+            print(f"Error saving face image: {e}")
+            return False
+    
+    def recognize_face(self, input_image_bytes: bytes, branch_code: str, year: str) -> Optional[str]:
+        """Recognize face and return roll number of best match"""
+        try:
+            print(f"🔍 Starting face recognition for {branch_code}/{year}")
+            
+            # Save input image temporarily
+            with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp_file:
+                tmp_file.write(input_image_bytes)
+                input_image_path = tmp_file.name
+            print(f"📁 Input image saved to: {input_image_path}")
+            
+            # Get all face images from the faces directory
+            faces_dir = os.path.join("data", "branches", branch_code, year, "faces")
+            print(f"📂 Looking for faces in: {faces_dir}")
+            
+            if not os.path.exists(faces_dir):
+                print(f"❌ Faces directory not found: {faces_dir}")
+                os.unlink(input_image_path)
+                return None
+            
+            face_files = [f for f in os.listdir(faces_dir) if f.endswith('.jpg')]
+            print(f"📊 Found {len(face_files)} face images to compare")
+            
+            if not face_files:
+                print("❌ No face images found in database")
+                os.unlink(input_image_path)
+                return None
+            
+            best_match = None
+            lowest_distance = float('inf')
+            all_results = []
+            
+            # Compare with all stored faces and find best match
+            for face_file in face_files:
+                roll_no = face_file.replace('.jpg', '')
+                stored_face_path = os.path.join(faces_dir, face_file)
+                
+                try:
+                    print(f"🔄 Comparing with {roll_no}...")
+                    
+                    # Use DeepFace to verify faces
+                    result = DeepFace.verify(
+                        img1_path=input_image_path,
+                        img2_path=stored_face_path,
+                        model_name='VGG-Face',
+                        enforce_detection=False
+                    )
+                    
+                    distance = result['distance']
+                    verified = result['verified']
+                    
+                    print(f"   📈 {roll_no}: distance={distance:.4f}, verified={verified}")
+                    
+                    # Store result for logging
+                    all_results.append({
+                        'roll_no': roll_no,
+                        'distance': distance,
+                        'verified': verified
+                    })
+                    
+                    # Check if this is the best match so far
+                    if verified and distance < lowest_distance:
+                        lowest_distance = distance
+                        best_match = roll_no
+                        print(f"   ✅ New best match: {roll_no} with distance {distance:.4f}")
+                        
+                except Exception as e:
+                    print(f"❌ Error comparing with {roll_no}: {str(e)}")
+                    continue
+            
+            # Clean up temporary file
+            os.unlink(input_image_path)
+            
+            # Log all comparison results
+            print(f"📊 All comparison results:")
+            for result in sorted(all_results, key=lambda x: x['distance']):
+                status = "✅ VERIFIED" if result['verified'] else "❌ NOT VERIFIED"
+                print(f"   {result['roll_no']}: {result['distance']:.4f} - {status}")
+            
+            if best_match:
+                print(f"🎯 BEST MATCH FOUND: {best_match} with distance {lowest_distance:.4f}")
+                return best_match
+            else:
+                print("❌ No verified matches found")
+                return None
+            
+        except Exception as e:
+            print(f"❌ Critical error in face recognition: {str(e)}")
+            # Clean up temporary file if it exists
+            try:
+                if 'input_image_path' in locals():
+                    os.unlink(input_image_path)
+            except:
+                pass
+            return None
+    
+    def extract_face_from_camera(self, image_bytes: bytes) -> Optional[bytes]:
+        """Extract and crop face from camera image"""
+        try:
+            # Convert bytes to image
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return None
+            
+            # Use OpenCV's face detection to crop face
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+            
+            if len(faces) > 0:
+                # Take the largest face
+                largest_face = max(faces, key=lambda x: x[2] * x[3])
+                x, y, w, h = largest_face
+                
+                # Add some padding around the face
+                padding = int(0.2 * min(w, h))
+                x = max(0, x - padding)
+                y = max(0, y - padding)
+                w = min(img.shape[1] - x, w + 2 * padding)
+                h = min(img.shape[0] - y, h + 2 * padding)
+                
+                # Crop face
+                face_img = img[y:y+h, x:x+w]
+                
+                # Encode back to bytes
+                _, buffer = cv2.imencode('.jpg', face_img)
+                return buffer.tobytes()
+            
+            # If no face detected, return original image
+            _, buffer = cv2.imencode('.jpg', img)
+            return buffer.tobytes()
+            
+        except Exception as e:
+            print(f"Error extracting face: {e}")
+            return None
+```
+
+## services/qr_service.py
+```python
+import qrcode
+import os
+from pyzbar import pyzbar
+from PIL import Image
+import cv2
+import numpy as np
+
+class QRService:
+    def __init__(self):
+        pass
+    
+    def generate_qr_code(self, roll_no: str, branch_code: str, year: str) -> bool:
+        """Generate QR code for student"""
+        try:
+            # Create QR code directory path
+            qr_dir = os.path.join("data", "branches", branch_code, year, "qrcodes")
+            os.makedirs(qr_dir, exist_ok=True)
+            
+            # Generate QR code
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(roll_no)
+            qr.make(fit=True)
+            
+            # Create QR code image
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Save QR code
+            qr_path = os.path.join(qr_dir, f"{roll_no}.png")
+            img.save(qr_path)
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error generating QR code: {e}")
+            return False
+    
+    def decode_qr_code(self, image_bytes: bytes) -> str:
+        """Decode QR code from image bytes"""
+        try:
+            # Convert bytes to image
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return None
+            
+            # Convert to PIL Image for pyzbar
+            img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            
+            # Decode QR codes
+            decoded_objects = pyzbar.decode(img_pil)
+            
+            if decoded_objects:
+                # Return the first QR code data
+                return decoded_objects[0].data.decode('utf-8')
+            
+            return None
+            
+        except Exception as e:
+            print(f"Error decoding QR code: {e}")
+            return None
+    
+    def get_qr_code_path(self, roll_no: str, branch_code: str, year: str) -> str:
+        """Get QR code file path for a student"""
+        return os.path.join("data", "branches", branch_code, year, "qrcodes", f"{roll_no}.png")
+```
+
+## api/main.py
+```python
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+from datetime import datetime
+import os
+
+from models import *
+from services.data_service import DataService
+from services.session_service import SessionService
+from services.face_service import FaceService
+from services.qr_service import QRService
+
+app = FastAPI(title="Face Recognition Attendance System", version="1.0.0")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Initialize services
+data_service = DataService()
+session_service = SessionService()
+face_service = FaceService()
+qr_service = QRService()
+
+@app.get("/")
+def read_root():
+    return {"message": "Face Recognition Attendance System API", "status": "running"}
+
+# Authentication endpoints
+@app.post("/api/teacher/login")
+def teacher_login(login_data: TeacherLogin):
+    if data_service.verify_teacher(login_data.teacher_id, login_data.password):
+        return {"success": True, "teacher_id": login_data.teacher_id}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+@app.post("/api/student/login")
+def student_login(login_data: StudentLogin):
+    student = data_service.verify_student(login_data.roll_no, login_data.password)
+    if student:
+        return {"success": True, "student": student}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+# Branch and Student endpoints
+@app.get("/api/branches")
+def get_branches():
+    return data_service.get_branches()
+
+@app.post("/api/students/register")
+async def register_student(
+    roll_no: str = Form(...),
+    name: str = Form(...),
+    password: str = Form(...),
+    branch_code: str = Form(...),
+    face_image: UploadFile = File(...)
+):
+    # Validate roll number format (BT23CSH013)
+    if len(roll_no) < 8 or not roll_no.startswith('BT'):
+        raise HTTPException(status_code=400, detail="Invalid roll number format. Use BT[YY][BRANCH][XXX]")
+    
+    try:
+        # Extract year from roll number
+        year = "20" + roll_no[2:4]
+        
+        # Read face image
+        face_image_bytes = await face_image.read()
+        
+        # Register student
+        success = data_service.register_student(roll_no, name, password, branch_code)
+        if not success:
+            raise HTTPException(status_code=400, detail="Student already exists or registration failed")
+        
+        # Save face image
+        face_saved = face_service.save_face_image(face_image_bytes, roll_no, branch_code, year)
+        if not face_saved:
+            raise HTTPException(status_code=400, detail="Failed to save face image")
+        
+        # Generate QR code
+        qr_generated = qr_service.generate_qr_code(roll_no, branch_code, year)
+        if not qr_generated:
+            raise HTTPException(status_code=400, detail="Failed to generate QR code")
+        
+        return {"success": True, "message": "Student registered successfully"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
+
+@app.get("/api/students/{branch_code}/{year}")
+def get_students(branch_code: str, year: str):
+    return data_service.get_students(branch_code, year)
+
+# Session Management endpoints
+@app.post("/api/sessions/start")
+def start_session(session_data: SessionStart):
+    session_id = session_service.start_session(
+        session_data.teacher_id,
+        session_data.branch_code,
+        session_data.year,
+        session_data.duration_minutes
+    )
+    
+    if session_id:
+        return {"success": True, "session_id": session_id}
+    else:
+        raise HTTPException(status_code=400, detail="Session already active for this branch-year")
+
+@app.get("/api/sessions/{branch_code}/{year}/active")
+def get_active_session(branch_code: str, year: str):
+    session = session_service.get_active_session(branch_code, year)
+    if session:
+        return session
+    else:
+        raise HTTPException(status_code=404, detail="No active session found")
+
+@app.post("/api/sessions/{session_id}/close")
+def close_session(session_id: str, branch_code: str, year: str):
+    session_service.close_session(session_id, branch_code, year)
+    return {"success": True, "message": "Session closed successfully"}
+
+@app.get("/api/sessions/{session_id}/attendance")
+def get_session_attendance(session_id: str, branch_code: str, year: str):
+    return session_service.get_session_attendance(session_id, branch_code, year)
+
+# Attendance endpoints
+@app.post("/api/attendance/mark-face")
+async def mark_attendance_face(
+    session_id: str = Form(...),
+    face_image: UploadFile = File(...)
+):
+    try:
+        print(f"📸 Face attendance request for session: {session_id}")
+        
+        # Get session info
+        # Extract branch and year from session_id (format: SES_YYYYMMDD_HHMMSS_BRANCH_YEAR)
+        parts = session_id.split('_')
+        if len(parts) < 5:
+            print(f"❌ Invalid session ID format: {session_id}")
+            raise HTTPException(status_code=400, detail="Invalid session ID format")
+        
+        branch_code = parts[3]
+        year = parts[4]
+        print(f"📂 Extracted branch: {branch_code}, year: {year}")
+        
+        # Verify session is active
+        active_session = session_service.get_active_session(branch_code, year)
+        if not active_session or active_session['session_id'] != session_id:
+            print(f"❌ Session not active: {session_id}")
+            raise HTTPException(status_code=400, detail="Session not active or expired")
+        
+        print("✅ Session verified as active")
+        
+        # Read face image
+        face_image_bytes = await face_image.read()
+        print(f"📷 Face image read: {len(face_image_bytes)} bytes")
+        
+        if len(face_image_bytes) == 0:
+            print("❌ Empty face image")
+            raise HTTPException(status_code=400, detail="Empty face image received")
+        
+        # Recognize face
+        print("🔍 Starting face recognition...")
+        recognized_roll_no = face_service.recognize_face(face_image_bytes, branch_code, year)
+        
+        if recognized_roll_no:
+            print(f"✅ Face recognized as: {recognized_roll_no}")
+            
+            # Mark attendance
+            success = data_service.mark_attendance(recognized_roll_no, branch_code, year, "Present")
+            if success:
+                print(f"✅ Attendance marked for: {recognized_roll_no}")
+                return {
+                    "success": True, 
+                    "roll_no": recognized_roll_no, 
+                    "message": "Attendance marked successfully via face recognition"
+                }
+            else:
+                print(f"❌ Failed to mark attendance for: {recognized_roll_no}")
+                raise HTTPException(status_code=400, detail="Failed to mark attendance in database")
+        else:
+            print("❌ Face not recognized or no match found")
+            raise HTTPException(status_code=400, detail="Face not recognized. Please ensure good lighting and clear face visibility.")
+            
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        error_msg = str(e)
+        print(f"❌ Unexpected error in face recognition: {error_msg}")
+        raise HTTPException(status_code=500, detail=f"Face recognition failed: {error_msg}")
+
+@app.post("/api/attendance/mark-qr")
+async def mark_attendance_qr(
+    session_id: str = Form(...),
+    qr_image: UploadFile = File(...)
+):
+    try:
+        print(f"📱 QR attendance request for session: {session_id}")
+        
+        # Get session info
+        parts = session_id.split('_')
+        if len(parts) < 5:
+            print(f"❌ Invalid session ID format: {session_id}")
+            raise HTTPException(status_code=400, detail="Invalid session ID format")
+        
+        branch_code = parts[3]
+        year = parts[4]
+        print(f"📂 Extracted branch: {branch_code}, year: {year}")
+        
+        # Verify session is active
+        active_session = session_service.get_active_session(branch_code, year)
+        if not active_session or active_session['session_id'] != session_id:
+            print(f"❌ Session not active: {session_id}")
+            raise HTTPException(status_code=400, detail="Session not active or expired")
+        
+        print("✅ Session verified as active")
+        
+        # Read QR image
+        qr_image_bytes = await qr_image.read()
+        print(f"📱 QR image read: {len(qr_image_bytes)} bytes")
+        
+        if len(qr_image_bytes) == 0:
+            print("❌ Empty QR image")
+            raise HTTPException(status_code=400, detail="Empty QR image received")
+        
+        # Decode QR code
+        print("🔍 Starting QR code decoding...")
+        roll_no = qr_service.decode_qr_code(qr_image_bytes)
+        
+        if roll_no:
+            print(f"📱 QR code decoded as: {roll_no}")
+            
+            # Verify student exists in this branch-year
+            students = data_service.get_students(branch_code, year)
+            student_exists = any(s['roll_no'] == roll_no for s in students)
+            
+            if student_exists:
+                print(f"✅ Student {roll_no} found in database")
+                
+                # Mark attendance
+                success = data_service.mark_attendance(roll_no, branch_code, year, "Present")
+                if success:
+                    print(f"✅ Attendance marked for: {roll_no}")
+                    return {
+                        "success": True, 
+                        "roll_no": roll_no, 
+                        "message": "Attendance marked successfully via QR code"
+                    }
+                else:
+                    print(f"❌ Failed to mark attendance for: {roll_no}")
+                    raise HTTPException(status_code=400, detail="Failed to mark attendance in database")
+            else:
+                print(f"❌ Student {roll_no} not found in {branch_code}/{year}")
+                raise HTTPException(status_code=400, detail=f"Student {roll_no} not found in this branch-year")
+        else:
+            print("❌ QR code not decoded")
+            raise HTTPException(status_code=400, detail="QR code not recognized. Please ensure clear and well-lit QR code.")
+            
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        error_msg = str(e)
+        print(f"❌ Unexpected error in QR recognition: {error_msg}")
+        raise HTTPException(status_code=500, detail=f"QR recognition failed: {error_msg}")
+
+@app.get("/api/attendance/{branch_code}/{year}")
+def get_attendance_data(branch_code: str, year: str):
+    return data_service.get_attendance_data(branch_code, year)
+
+@app.get("/api/stats/{branch_code}/{year}")
+def get_stats_data(branch_code: str, year: str):
+    return data_service.get_stats_data(branch_code, year)
+
+# File serving endpoints
+@app.get("/api/qr/{branch_code}/{year}/{roll_no}")
+def get_qr_code(branch_code: str, year: str, roll_no: str):
+    qr_path = qr_service.get_qr_code_path(roll_no, branch_code, year)
+    if os.path.exists(qr_path):
+        return FileResponse(qr_path)
+    else:
+        raise HTTPException(status_code=404, detail="QR code not found")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+## teacher_app.py
+```python
+import streamlit as st
+import requests
+import pandas as pd
+from datetime import datetime
+import time
+
+# Configure Streamlit
+st.set_page_config(
+    page_title="Teacher Dashboard - Attendance System",
+    page_icon="👨‍🏫",
+    layout="wide"
+)
+
+API_BASE_URL = "http://localhost:8000"
+
+def main():
+    st.title("👨‍🏫 Teacher Dashboard - Face Recognition Attendance System")
+    
+    # Session state initialization
+    if 'teacher_logged_in' not in st.session_state:
+        st.session_state.teacher_logged_in = False
+    if 'teacher_id' not in st.session_state:
+        st.session_state.teacher_id = None
+    if 'current_session' not in st.session_state:
+        st.session_state.current_session = None
+    
+    # Login form
+    if not st.session_state.teacher_logged_in:
+        show_login()
+    else:
+        show_dashboard()
+
+def show_login():
+    st.markdown("### 🔐 Teacher Login")
+    
+    with st.form("login_form"):
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            teacher_id = st.text_input("Teacher ID", placeholder="e.g., T001")
+            password = st.text_input("Password", type="password")
+            submit_button = st.form_submit_button("Login", use_container_width=True)
+        
+        if submit_button:
+            if teacher_id and password:
+                try:
+                    response = requests.post(f"{API_BASE_URL}/api/teacher/login", 
+                                           json={"teacher_id": teacher_id, "password": password})
+                    
+                    if response.status_code == 200:
+                        st.session_state.teacher_logged_in = True
+                        st.session_state.teacher_id = teacher_id
+                        st.success("✅ Login successful!")
+                        st.rerun()
+                    else:
+                        st.error("❌ Invalid credentials!")
+                        
+                except requests.exceptions.RequestException:
+                    st.error("❌ Could not connect to server. Please ensure the API is running.")
+            else:
+                st.warning("⚠️ Please enter both Teacher ID and Password")
+
+def show_dashboard():
+    # Header with logout
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown(f"### Welcome, {st.session_state.teacher_id}")
+    with col2:
+        if st.button("Logout", type="secondary"):
+            st.session_state.teacher_logged_in = False
+            st.session_state.teacher_id = None
+            st.session_state.current_session = None
+            st.rerun()
+    
+    st.divider()
+    
+    # Main dashboard tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["📅 Session Management", "👥 Current Session", "📊 Statistics", "📋 Attendance Records"])
+    
+    with tab1:
+        show_session_management()
+    
+    with tab2:
+        show_current_session()
+    
+    with tab3:
+        show_statistics()
+    
+    with tab4:
+        show_attendance_records()
+
+def show_session_management():
+    st.markdown("### 📅 Start New Attendance Session")
+    
+    # Get branches
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/branches")
+        if response.status_code == 200:
+            branches = response.json()
+        else:
+            branches = []
+    except:
+        branches = []
+        st.error("Could not fetch branches")
+    
+    if not branches:
+        st.warning("No branches available")
+        return
+    
+    with st.form("start_session_form"):
+        col1, col2, col3 = st.columns([2, 2, 1])
+        
+        with col1:
+            branch_options = [f"{b['branch_code']} - {b['branch_name']}" for b in branches]
+            selected_branch = st.selectbox("Select Branch", branch_options)
+            branch_code = selected_branch.split(" - ")[0] if selected_branch else ""
+        
+        with col2:
+            year = st.selectbox("Select Year", ["2022", "2023", "2024", "2025"], index=2)
+        
+        with col3:
+            duration = st.number_input("Duration (minutes)", min_value=10, max_value=180, value=60)
+        
+        start_button = st.form_submit_button("🚀 Start Session", use_container_width=True)
+        
+        if start_button and branch_code:
+            try:
+                response = requests.post(f"{API_BASE_URL}/api/sessions/start", 
+                                       json={
+                                           "teacher_id": st.session_state.teacher_id,
+                                           "branch_code": branch_code,
+                                           "year": year,
+                                           "duration_minutes": duration
+                                       })
+                
+                if response.status_code == 200:
+                    session_data = response.json()
+                    st.session_state.current_session = {
+                        "session_id": session_data["session_id"],
+                        "branch_code": branch_code,
+                        "year": year
+                    }
+                    st.success(f"✅ Session started successfully! Session ID: {session_data['session_id']}")
+                else:
+                    error_msg = response.json().get("detail", "Failed to start session")
+                    st.error(f"❌ {error_msg}")
+                    
+            except requests.exceptions.RequestException:
+                st.error("❌ Could not connect to server")
+
+def show_current_session():
+    st.markdown("### 👥 Current Active Session")
+    
+    if st.session_state.current_session:
+        session = st.session_state.current_session
+        
+        # Session info
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Session ID", session["session_id"])
+        with col2:
+            st.metric("Branch", session["branch_code"])
+        with col3:
+            st.metric("Year", session["year"])
+        with col4:
+            if st.button("🔄 Refresh", type="secondary"):
+                st.rerun()
+        
+        # Close session button
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            if st.button("❌ Close Session", type="primary", use_container_width=True):
+                try:
+                    response = requests.post(f"{API_BASE_URL}/api/sessions/{session['session_id']}/close",
+                                           params={"branch_code": session["branch_code"], "year": session["year"]})
+                    
+                    if response.status_code == 200:
+                        st.success("✅ Session closed successfully!")
+                        st.session_state.current_session = None
+                        st.rerun()
+                    else:
+                        st.error("❌ Failed to close session")
+                        
+                except requests.exceptions.RequestException:
+                    st.error("❌ Could not connect to server")
+        
+        st.divider()
+        
+        # Get current attendance
+        try:
+            response = requests.get(f"{API_BASE_URL}/api/sessions/{session['session_id']}/attendance",
+                                  params={"branch_code": session["branch_code"], "year": session["year"]})
+            
+            if response.status_code == 200:
+                attendance_data = response.json()
+                
+                if attendance_data:
+                    df = pd.DataFrame(attendance_data)
+                    
+                    # Summary metrics
+                    total_students = len(df)
+                    present_students = len(df[df['status'] == 'Present'])
+                    absent_students = total_students - present_students
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Total Students", total_students)
+                    with col2:
+                        st.metric("Present", present_students, delta=f"{(present_students/total_students*100):.1f}%")
+                    with col3:
+                        st.metric("Absent", absent_students)
+                    
+                    # Attendance table
+                    st.markdown("#### 📋 Real-time Attendance")
+                    
+                    # Style the dataframe
+                    def style_attendance(val):
+                        if val == 'Present':
+                            return 'background-color: #d4edda; color: #155724'
+                        elif val == 'Absent':
+                            return 'background-color: #f8d7da; color: #721c24'
+                        return ''
+                    
+                    styled_df = df.style.applymap(style_attendance, subset=['status'])
+                    st.dataframe(styled_df, use_container_width=True, hide_index=True)
+                    
+                else:
+                    st.info("No students registered for this branch-year")
+                    
+            else:
+                st.error("Failed to fetch attendance data")
+                
+        except requests.exceptions.RequestException:
+            st.error("Could not connect to server")
+    
+    else:
+        st.info("No active session. Please start a session from the Session Management tab.")
+
+def show_statistics():
+    st.markdown("### 📊 Attendance Statistics")
+    
+    # Branch and year selection
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/branches")
+        if response.status_code == 200:
+            branches = response.json()
+        else:
+            branches = []
+    except:
+        branches = []
+    
+    if not branches:
+        st.warning("No branches available")
+        return
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        branch_options = [f"{b['branch_code']} - {b['branch_name']}" for b in branches]
+        selected_branch = st.selectbox("Select Branch", branch_options, key="stats_branch")
+        branch_code = selected_branch.split(" - ")[0] if selected_branch else ""
+    
+    with col2:
+        year = st.selectbox("Select Year", ["2022", "2023", "2024", "2025"], index=2, key="stats_year")
+    
+    if branch_code:
+        try:
+            response = requests.get(f"{API_BASE_URL}/api/stats/{branch_code}/{year}")
+            
+            if response.status_code == 200:
+                stats_data = response.json()
+                
+                if stats_data:
+                    df = pd.DataFrame(stats_data)
+                    
+                    # Overall statistics
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Students", len(df))
+                    with col2:
+                        avg_attendance = df['attendance_pct'].mean() if not df.empty else 0
+                        st.metric("Average Attendance", f"{avg_attendance:.1f}%")
+                    with col3:
+                        total_present = df['present_days'].sum() if not df.empty else 0
+                        st.metric("Total Present Days", total_present)
+                    with col4:
+                        total_absent = df['absent_days'].sum() if not df.empty else 0
+                        st.metric("Total Absent Days", total_absent)
+                    
+                    st.divider()
+                    
+                    # Detailed statistics table
+                    st.markdown("#### 📋 Detailed Statistics")
+                    
+                    # Sort by attendance percentage (descending)
+                    df_sorted = df.sort_values('attendance_pct', ascending=False)
+                    
+                    # Format the dataframe
+                    df_display = df_sorted[['roll_no', 'name', 'present_days', 'absent_days', 'total_days', 'attendance_pct', 'last_present', 'last_absent']].copy()
+                    df_display['attendance_pct'] = df_display['attendance_pct'].apply(lambda x: f"{x:.1f}%")
+                    
+                    st.dataframe(df_display, use_container_width=True, hide_index=True)
+                    
+                    # Attendance distribution chart
+                    st.markdown("#### 📈 Attendance Distribution")
+                    attendance_ranges = ["90-100%", "80-89%", "70-79%", "60-69%", "Below 60%"]
+                    counts = [
+                        len(df[df['attendance_pct'] >= 90]),
+                        len(df[(df['attendance_pct'] >= 80) & (df['attendance_pct'] < 90)]),
+                        len(df[(df['attendance_pct'] >= 70) & (df['attendance_pct'] < 80)]),
+                        len(df[(df['attendance_pct'] >= 60) & (df['attendance_pct'] < 70)]),
+                        len(df[df['attendance_pct'] < 60])
+                    ]
+                    
+                    chart_df = pd.DataFrame({
+                        'Attendance Range': attendance_ranges,
+                        'Number of Students': counts
+                    })
+                    
+                    st.bar_chart(chart_df.set_index('Attendance Range'))
+                    
+                else:
+                    st.info("No statistics available for this branch-year")
+                    
+            else:
+                st.error("Failed to fetch statistics")
+                
+        except requests.exceptions.RequestException:
+            st.error("Could not connect to server")
+
+def show_attendance_records():
+    st.markdown("### 📋 Attendance Records")
+    
+    # Branch and year selection
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/branches")
+        if response.status_code == 200:
+            branches = response.json()
+        else:
+            branches = []
+    except:
+        branches = []
+    
+    if not branches:
+        st.warning("No branches available")
+        return
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        branch_options = [f"{b['branch_code']} - {b['branch_name']}" for b in branches]
+        selected_branch = st.selectbox("Select Branch", branch_options, key="records_branch")
+        branch_code = selected_branch.split(" - ")[0] if selected_branch else ""
+    
+    with col2:
+        year = st.selectbox("Select Year", ["2022", "2023", "2024", "2025"], index=2, key="records_year")
+    
+    if branch_code:
+        try:
+            response = requests.get(f"{API_BASE_URL}/api/attendance/{branch_code}/{year}")
+            
+            if response.status_code == 200:
+                attendance_data = response.json()
+                
+                if attendance_data:
+                    df = pd.DataFrame(attendance_data)
+                    
+                    st.markdown("#### 📅 Daily Attendance Records")
+                    st.info("Green = Present, Red = Absent, Gray = No Data")
+                    
+                    # Display attendance table
+                    st.dataframe(df, use_container_width=True, hide_index=True)
+                    
+                    # Download attendance data
+                    csv = df.to_csv(index=False)
+                    st.download_button(
+                        label="📥 Download Attendance Data (CSV)",
+                        data=csv,
+                        file_name=f"attendance_{branch_code}_{year}_{datetime.now().strftime('%Y%m%d')}.csv",
+                        mime="text/csv"
+                    )
+                    
+                else:
+                    st.info("No attendance records available for this branch-year")
+                    
+            else:
+                st.error("Failed to fetch attendance records")
+                
+        except requests.exceptions.RequestException:
+            st.error("Could not connect to server")
+
+if __name__ == "__main__":
+    main()
+```
+
+## student_app.py
+```python
+import streamlit as st
+import requests
+from PIL import Image
+import io
+from datetime import datetime
+import cv2
+import numpy as np
+
+# Configure Streamlit
+st.set_page_config(
+    page_title="Student Portal - Attendance System",
+    page_icon="🎓",
+    layout="wide"
+)
+
+API_BASE_URL = "http://localhost:8000"
+
+def main():
+    st.title("🎓 Student Portal - Face Recognition Attendance System")
+    
+    # Session state initialization
+    if 'selected_branch' not in st.session_state:
+        st.session_state.selected_branch = None
+    if 'selected_year' not in st.session_state:
+        st.session_state.selected_year = None
+    if 'show_registration' not in st.session_state:
+        st.session_state.show_registration = False
+    
+    # Navigation
+    if st.session_state.show_registration:
+        show_registration()
+    elif not st.session_state.selected_branch:
+        show_branch_selection()
+    else:
+        show_attendance_interface()
+
+def show_branch_selection():
+    st.markdown("### 🏫 Select Your Branch and Year")
+    st.info("Choose your branch and year to check for active attendance sessions")
+    
+    # Registration button in top right
+    col1, col2 = st.columns([3, 1])
+    with col2:
+        if st.button("📝 Register New Student", type="secondary"):
+            st.session_state.show_registration = True
+            st.rerun()
+    
+    # Get branches
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/branches")
+        if response.status_code == 200:
+            branches = response.json()
+        else:
+            branches = []
+    except:
+        branches = []
+        st.error("Could not fetch branches")
+    
+    if not branches:
+        st.warning("No branches available")
+        return
+    
+    with st.form("branch_selection_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            branch_options = [f"{b['branch_code']} - {b['branch_name']}" for b in branches]
+            selected_branch = st.selectbox("Select Branch", [""] + branch_options)
+            branch_code = selected_branch.split(" - ")[0] if selected_branch else ""
+        
+        with col2:
+            year = st.selectbox("Select Year", ["", "2022", "2023", "2024", "2025"])
+        
+        submit_button = st.form_submit_button("🔍 Check for Active Session", use_container_width=True)
+        
+        if submit_button and branch_code and year:
+            # Store selection in session state
+            st.session_state.selected_branch = branch_code
+            st.session_state.selected_year = year
+            st.rerun()
+        elif submit_button:
+            st.warning("⚠️ Please select both branch and year")
+
+def show_attendance_interface():
+    # Header with branch selection
+    col1, col2, col3 = st.columns([2, 2, 1])
+    
+    with col1:
+        st.markdown(f"### 🎓 Attendance Portal")
+        st.markdown(f"📚 **Branch:** {st.session_state.selected_branch} | 📅 **Year:** {st.session_state.selected_year}")
+    
+    with col2:
+        # Show current time
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        st.markdown(f"⏰ **Current Time:** {current_time}")
+    
+    with col3:
+        if st.button("🔄 Change Branch", type="secondary"):
+            st.session_state.selected_branch = None
+            st.session_state.selected_year = None
+            st.rerun()
+    
+    st.divider()
+    
+    # Check for active session
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/sessions/{st.session_state.selected_branch}/{st.session_state.selected_year}/active")
+        
+        if response.status_code == 200:
+            session = response.json()
+            show_active_session_interface(session)
+        
+        elif response.status_code == 404:
+            show_no_session_message()
+        
+        else:
+            st.error("❌ Error checking for active sessions")
+            
+    except requests.exceptions.RequestException:
+        st.error("❌ Could not connect to server")
+
+def show_active_session_interface(session):
+    """Show interface when there's an active session"""
+    
+    # Session info and countdown timer
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.success(f"🟢 **Active Session Found!**")
+        st.info(f"📝 **Session ID:** {session['session_id']}")
+    
+    with col2:
+        # Calculate remaining time
+        try:
+            deadline = datetime.fromisoformat(session['deadline_time'])
+            now = datetime.now()
+            remaining = deadline - now
+            
+            if remaining.total_seconds() > 0:
+                hours, remainder = divmod(int(remaining.total_seconds()), 3600)
+                minutes, seconds = divmod(remainder, 60)
+                st.metric("⏰ Time Remaining", f"{hours:02d}:{minutes:02d}:{seconds:02d}")
+            else:
+                st.error("⏰ Session has expired!")
+                return
+                
+        except Exception as e:
+            st.warning("⏰ Could not calculate remaining time")
+    
+    st.divider()
+    
+    # Attendance marking interface
+    st.markdown("### ✅ Mark Your Attendance")
+    st.info("Choose one of the methods below to mark your attendance")
+    
+    # Two methods side by side
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("#### 📸 Method 1: Face Recognition")
+        st.info("Capture your face to mark attendance automatically")
+        
+        face_image = st.camera_input("📷 Capture your face", key="face_attendance")
+        
+        if face_image:
+            if st.button("🔍 Mark Attendance via Face", type="primary", use_container_width=True):
+                mark_attendance_face(session['session_id'], face_image)
+    
+    with col2:
+        st.markdown("#### 📱 Method 2: QR Code Scan")
+        st.info("Scan your QR code to mark attendance")
+        
+        qr_image = st.camera_input("📱 Scan your QR code", key="qr_attendance")
+        
+        if qr_image:
+            if st.button("📱 Mark Attendance via QR", type="primary", use_container_width=True):
+                mark_attendance_qr(session['session_id'], qr_image)
+    
+    # Auto-refresh every 10 seconds to update timer
+    import time
+    time.sleep(10)
+    st.rerun()
+
+def show_no_session_message():
+    """Show message when no active session"""
+    st.warning("⚠️ No Active Session")
+    st.info("There is currently no active attendance session for your selected branch and year.")
+    st.markdown("""
+    ### 📋 What to do:
+    - **Wait for your teacher** to start an attendance session
+    - **Refresh this page** periodically to check for new sessions
+    - **Contact your teacher** if you think there should be an active session
+    """)
+    
+    # Auto refresh button
+    if st.button("🔄 Refresh", type="secondary", use_container_width=False):
+        st.rerun()
+    
+    # Auto refresh every 30 seconds
+    st.markdown("*Page will auto-refresh every 30 seconds*")
+    time.sleep(30)
+    st.rerun()
+
+def mark_attendance_face(session_id, face_image):
+    """Handle face recognition attendance marking"""
+    try:
+        files = {"face_image": ("face.jpg", face_image.getvalue(), "image/jpeg")}
+        data = {"session_id": session_id}
+        
+        with st.spinner("🔍 Recognizing face... Please wait..."):
+            response = requests.post(f"{API_BASE_URL}/api/attendance/mark-face", 
+                                   files=files, data=data)
+        
+        if response.status_code == 200:
+            result = response.json()
+            st.success(f"✅ **Attendance Marked Successfully!**")
+            st.success(f"🎓 **Roll Number:** {result['roll_no']}")
+            st.balloons()
+            
+            # Show success for 3 seconds then refresh
+            time.sleep(3)
+            st.rerun()
+        else:
+            error_msg = response.json().get("detail", "Face recognition failed")
+            st.error(f"❌ {error_msg}")
+            st.error("💡 Try again with better lighting or clearer face position")
+            
+    except requests.exceptions.RequestException:
+        st.error("❌ Could not connect to server")
+
+def show_registration():
+    """Show student registration form"""
+    st.markdown("### 📝 Student Registration")
+    
+    # Back button
+    if st.button("← Back to Main", type="secondary"):
+        st.session_state.show_registration = False
+        st.rerun()
+    
+    st.info("Register yourself in the system to use face recognition for attendance")
+    
+    # Get branches
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/branches")
+        if response.status_code == 200:
+            branches = response.json()
+        else:
+            branches = []
+    except:
+        branches = []
+        st.error("Could not fetch branches")
+    
+    if not branches:
+        st.warning("No branches available for registration")
+        return
+    
+    with st.form("registration_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            roll_no = st.text_input("Roll Number", placeholder="e.g., BT23CSH013", help="Format: BT[YY][BRANCH][XXX]")
+            name = st.text_input("Full Name", placeholder="e.g., John Doe")
+        
+        with col2:
+            branch_options = [f"{b['branch_code']} - {b['branch_name']}" for b in branches]
+            selected_branch = st.selectbox("Branch", branch_options)
+            branch_code = selected_branch.split(" - ")[0] if selected_branch else ""
+            password = st.text_input("Password", type="password", help="Create a password for your account")
+        
+        st.markdown("#### 📸 Face Photo Capture")
+        st.info("📷 Click below to capture your face photo using your camera")
+        
+        # Camera input for face capture
+        face_image = st.camera_input("Capture your face photo")
+        
+        submit_button = st.form_submit_button("📝 Register", use_container_width=True, type="primary")
+        
+        if submit_button:
+            if all([roll_no, name, password, branch_code, face_image]):
+                # Validate roll number format
+                if not validate_roll_number(roll_no, branch_code):
+                    st.error("❌ Invalid roll number format or doesn't match selected branch")
+                    return
+                
+                try:
+                    # Prepare form data
+                    files = {"face_image": ("face.jpg", face_image.getvalue(), "image/jpeg")}
+                    data = {
+                        "roll_no": roll_no.upper(),
+                        "name": name,
+                        "password": password,
+                        "branch_code": branch_code
+                    }
+                    
+                    with st.spinner("📝 Registering student... Please wait..."):
+                        response = requests.post(f"{API_BASE_URL}/api/students/register", 
+                                               files=files, data=data)
+                    
+                    if response.status_code == 200:
+                        st.success("✅ Registration successful!")
+                        st.success("🎉 You can now use the system to mark attendance!")
+                        st.balloons()
+                        
+                        # Auto redirect back to main after 3 seconds
+                        time.sleep(3)
+                        st.session_state.show_registration = False
+                        st.rerun()
+                    else:
+                        error_msg = response.json().get("detail", "Registration failed")
+                        st.error(f"❌ {error_msg}")
+                        
+                except requests.exceptions.RequestException:
+                    st.error("❌ Could not connect to server")
+            else:
+                st.warning("⚠️ Please fill all fields and capture your face photo")
+
+def validate_roll_number(roll_no, branch_code):
+    """Validate roll number format: BT[YY][BRANCH][XXX]"""
+    if len(roll_no) < 8 or not roll_no.startswith('BT'):
+        return False
+    
+    try:
+        # Extract components
+        year_part = roll_no[2:4]  # Should be 22, 23, 24, or 25
+        branch_part = roll_no[4:7]  # Should match selected branch
+        number_part = roll_no[7:]  # Should be 3 digits
+        
+        # Validate year (22-25)
+        if year_part not in ['22', '23', '24', '25']:
+            return False
+        
+        # Validate branch matches selection
+        if branch_part != branch_code:
+            return False
+        
+        # Validate number part (3 digits)
+        if len(number_part) != 3 or not number_part.isdigit():
+            return False
+        
+        return True
+        
+    except:
+        return False
+
+if __name__ == "__main__":
+    main()
+```
+
+## run.py
+```python
+import subprocess
+import sys
+import os
+import time
+import threading
+from config import setup_directories
+
+def run_api():
+    """Run FastAPI server"""
+    print("🚀 Starting FastAPI server on port 8000...")
+    # Change to direct module path instead of relative import
+    subprocess.run([sys.executable, "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"])
+
+def run_teacher_app():
+    """Run Streamlit teacher dashboard"""
+    print("👨‍🏫 Starting Teacher Dashboard on port 8502...")
+    subprocess.run([sys.executable, "-m", "streamlit", "run", "teacher_app.py", "--server.port", "8502"])
+
+def run_student_app():
+    """Run Streamlit student portal"""
+    print("🎓 Starting Student Portal on port 8503...")
+    subprocess.run([sys.executable, "-m", "streamlit", "run", "student_app.py", "--server.port", "8503"])
+
+def main():
+    print("🎯 Face Recognition Attendance System")
+    print("=====================================")
+    
+    # Setup directories and initialize data
+    print("📁 Setting up directories and initializing data...")
+    setup_directories()
+    
+    print("\n🚀 Starting all services...")
+    print("Please wait for all services to start...")
+    
+    # Create threads for each service
+    api_thread = threading.Thread(target=run_api, daemon=True)
+    teacher_thread = threading.Thread(target=run_teacher_app, daemon=True)
+    student_thread = threading.Thread(target=run_student_app, daemon=True)
+    
+    # Start all services
+    api_thread.start()
+    time.sleep(3)  # Give API time to start
+    
+    teacher_thread.start()
+    time.sleep(2)  # Give teacher app time to start
+    
+    student_thread.start()
+    
+    print("\n✅ All services started successfully!")
+    print("\n🌐 Access URLs:")
+    print("📊 API Documentation: http://localhost:8000/docs")
+    print("👨‍🏫 Teacher Dashboard: http://localhost:8502")
+    print("🎓 Student Portal: http://localhost:8503")
+    
+    print("\n📋 Demo Credentials:")
+    print("👨‍🏫 Teachers:")
+    print("   - Teacher ID: T001, Password: password123")
+    print("   - Teacher ID: T002, Password: password456")
+    print("\n🎓 Students: (Register first with your camera)")
+    print("   - Roll Number Format: BT[YY][BRANCH][XXX]")
+    print("   - Example: BT23CSH013, BT24CSA001, BT25CSD045")
+    
+    print("\n🔄 System is running... Press Ctrl+C to stop all services")
+    
+    try:
+        # Keep main thread alive
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\n🛑 Shutting down all services...")
+        print("✅ Goodbye!")
+
+if __name__ == "__main__":
+    main()
+```
+
+## api/__init__.py
+```python
+# Empty file to make api a package
+```
+
+## services/__init__.py
+```python
+# Empty file to make services a package
+```
+
+## README.md
+```markdown
+# 🎓 Face Recognition Attendance System
+
+A comprehensive attendance management system using **face recognition** and **QR codes** for educational institutions.
+
+## 🚀 Features
+
+- **Face Recognition**: Advanced face detection and recognition using DeepFace
+- **QR Code Backup**: Alternative attendance marking method
+- **Teacher Dashboard**: Session management and real-time monitoring
+- **Student Portal**: Easy registration and attendance marking
+- **Real-time Statistics**: Comprehensive attendance analytics
+- **Multi-year Support**: Handles students from 2022-2025
+- **CSV-based Storage**: Simple and editable data management
+
+## 📋 System Requirements
+
+- Python 3.8+
+- Webcam/Camera for face capture
+- Modern web browser
+
+## 🛠️ Installation
+
+1. **Clone or download the project files**
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Setup the system:**
+   ```bash
+   python config.py
+   ```
+
+4. **Start all services:**
+   ```bash
+   python run.py
+   ```
+
+## 🌐 Access Points
+
+- **API Documentation**: http://localhost:8000/docs
+- **Teacher Dashboard**: http://localhost:8502
+- **Student Portal**: http://localhost:8503
+
+## 🎯 Quick Start Guide
+
+### For Teachers:
+1. Open **Teacher Dashboard** (http://localhost:8502)
+2. Login with credentials: `T001` / `password123`
+3. Start a new session by selecting branch and year
+4. Monitor real-time attendance
+5. View statistics and close session when done
+
+### For Students:
+1. Open **Student Portal** (http://localhost:8503)
+2. **First time**: Register with your details and face photo
+3. **Daily**: Login and mark attendance via face or QR code
+4. View your attendance statistics
+
+## 📊 Roll Number Format
+
+**Structure**: `BT[YY][BRANCH][XXX]`
+
+- **BT**: Course code (Bachelor of Technology)
+- **YY**: Year (22, 23, 24, 25 for 2022-2025)
+- **BRANCH**: 3-letter branch code (CSH, CSA, CSD, CSB)
+- **XXX**: 3-digit student number (001-999)
+
+**Examples**:
+- `BT23CSH013` - BTech 2023, CSE(HCI), Student #013
+- `BT24CSA001` - BTech 2024, CSE(AIML), Student #001
+- `BT25CSD045` - BTech 2025, CSE(Data Science), Student #045
+
+## 🏢 Available Branches
+
+- **CSH**: CSE(HCI & Gaming Tech)
+- **CSA**: CSE(AIML)
+- **CSD**: CSE(Data Science)
+- **CSB**: CSE(Big Data Analytics)
+
+## 🔐 Demo Credentials
+
+### Teachers:
+| Teacher ID | Password    | Name        |
+|------------|-------------|-------------|
+| T001       | password123 | Prof. Sharma|
+| T002       | password456 | Ms. Rao     |
+| T003       | teacher789  | Dr. Kumar   |
+| T004       | prof123     | Prof. Singh |
+
+### Students:
+Students need to register first using the Student Portal with their camera.
+
+## 📁 Project Structure
+
+```
+face_attendance_system/
+├── requirements.txt          # Python dependencies
+├── config.py                # System setup and initialization
+├── run.py                   # Start all services
+├── teacher_app.py           # Streamlit teacher dashboard
+├── student_app.py           # Streamlit student portal
+├── api/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI application
+│   └── models.py            # Pydantic models
+├── services/
+│   ├── __init__.py
+│   ├── data_service.py      # CSV data operations
+│   ├── face_service.py      # Face recognition with DeepFace
+│   ├── qr_service.py        # QR code generation/scanning
+│   └── session_service.py   # Session management
+└── data/                    # All CSV files and images
+    ├── branches.csv
+    ├── teachers.csv
+    └── branches/
+        └── [BRANCH]/
+            └── [YEAR]/
+                ├── students.csv
+                ├── attendance.csv
+                ├── stats.csv
+                ├── sessions.csv
+                ├── faces/
+                └── qrcodes/
+```
+
+## 🔧 API Endpoints
+
+### Authentication
+- `POST /api/teacher/login` - Teacher login
+- `POST /api/student/login` - Student login
+
+### Registration
+- `POST /api/students/register` - Register new student with face
+
+### Session Management
+- `POST /api/sessions/start` - Start attendance session
+- `GET /api/sessions/{branch}/{year}/active` - Get active session
+- `POST /api/sessions/{session_id}/close` - Close session
+
+### Attendance
+- `POST /api/attendance/mark-face` - Mark via face recognition
+- `POST /api/attendance/mark-qr` - Mark via QR code scan
+
+### Data
+- `GET /api/branches` - Get all branches
+- `GET /api/students/{branch}/{year}` - Get students
+- `GET /api/attendance/{branch}/{year}` - Get attendance data
+- `GET /api/stats/{branch}/{year}` - Get statistics
+
+## 🚨 Troubleshooting
+
+### Common Issues:
+
+1. **Camera not working**: Ensure browser has camera permissions
+2. **Face recognition fails**: Ensure good lighting and clear face visibility
+3. **API connection error**: Check if all services are running
+4. **QR code not scanning**: Ensure QR code is clear and well-lit
+
+### Service Status:
+- API should be running on port 8000
+- Teacher Dashboard on port 8502  
+- Student Portal on port 8503
+
+## 📈 System Workflow
+
+1. **Teacher starts session** for specific branch-year
+2. **Students mark attendance** using face recognition or QR code
+3. **System automatically tracks** present/absent status
+4. **Session expires** and marks remaining students as absent
+5. **Statistics updated** in real-time
+6. **Reports available** for download
+
+## 🔒 Security Features
+
+- Password-based authentication for both teachers and students
+- Session-based access control
+- Face data stored locally (privacy-focused)
+- No external API dependencies for face recognition
+
+## 📊 Data Management
+
+- All data stored in CSV format for easy editing
+- Automatic backup of attendance data
+- Statistics calculated in real-time
+- Export functionality for reports
+
+## 🆘 Support
+
+For technical issues or questions:
+1. Check the API documentation at http://localhost:8000/docs
+2. Verify all services are running properly
+3. Check console logs for error messages
+4. Ensure camera permissions are granted
+
+---
+
+**🎯 Built for educational institutions seeking efficient, privacy-focused attendance management.**
+```

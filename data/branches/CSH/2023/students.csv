@@ -1,0 +1,4 @@
+roll_no,name,face_path,qr_code_path,registered_on,password
+BT23CSH013,SHRESTH SHANKHDHAR,data/branches/CSH/2023/faces/BT23CSH013.jpg,data/branches/CSH/2023/qrcodes/BT23CSH013.png,2025-09-24,12345678
+BT23CSH024,SHRESTH S,data/branches/CSH/2023/faces/BT23CSH024.jpg,data/branches/CSH/2023/qrcodes/BT23CSH024.png,2025-09-24,123456789
+BT23CSH050,KAWYANSHU RAJ,data/branches/CSH/2023/faces/BT23CSH050.jpg,data/branches/CSH/2023/qrcodes/BT23CSH050.png,2025-09-24,KAWYANSHU#04090000

@@ -1,0 +1,96 @@
+{
+  "weekly_plan": {
+    "Monday": {
+      "focus": "Lower Body Power (Batting/Bowling)",
+      "exercises": [
+        "5 min light jog + dynamic leg swings (warm\u2011up)",
+        "Barbell Back Squat 4\u00d76",
+        "Bulgarian Split Squat 3\u00d78 each leg (dumbbells)",
+        "Box Jump onto 45\u202fcm platform 3\u00d75",
+        "Standing Calf Raise 3\u00d712 (machine)",
+        "5 min full\u2011body stretch (cool\u2011down)"
+      ],
+      "duration": "80 min"
+    },
+    "Tuesday": {
+      "focus": "Upper Body Strength (Throwing, Batting)",
+      "exercises": [
+        "5 min jump rope (warm\u2011up)",
+        "Incline Dumbbell Press 4\u00d78",
+        "Seated Cable Row 3\u00d710",
+        "Arnold Press 3\u00d710",
+        "Medicine Ball Rotational Throw 3\u00d78 each side",
+        "Triceps Rope Pushdown 3\u00d712",
+        "5 min shoulder & chest stretch (cool\u2011down)"
+      ],
+      "duration": "75 min"
+    },
+    "Wednesday": {
+      "focus": "Speed & Agility (Fielding)",
+      "exercises": [
+        "5 min light jog (warm\u2011up)",
+        "Agility Ladder \u2013 in\u2011out shuffle 3\u00d730\u202fsec",
+        "Cone T\u2011Drill 4\u00d730\u202fsec",
+        "Sprint Intervals 6\u00d740\u202fm @80% effort, walk back recovery",
+        "Plyometric Lateral Bounds 3\u00d710 each side",
+        "5 min walk + lower\u2011body stretch (cool\u2011down)"
+      ],
+      "duration": "70 min"
+    },
+    "Thursday": {
+      "focus": "Core & Stability (Batting Posture)",
+      "exercises": [
+        "3\u00d730\u202fsec dynamic plank walk (warm\u2011up)",
+        "Hanging Leg Raise 3\u00d712",
+        "Russian Twist with 6\u202fkg medicine ball 3\u00d720",
+        "Cable Pallof Press 3\u00d712 each side",
+        "Single\u2011Leg Romanian Deadlift 3\u00d710 each leg (dumbbell)",
+        "Farmer's Walk 3\u00d740\u202fm (heavy dumbbells)",
+        "5 min cat\u2011cow & spinal mobility stretch (cool\u2011down)"
+      ],
+      "duration": "75 min"
+    },
+    "Friday": {
+      "focus": "Full Body Conditioning (Endurance)",
+      "exercises": [
+        "5 min rowing machine (warm\u2011up)",
+        "Kettlebell Swings 4\u00d715",
+        "Push\u2011up to T 3\u00d712",
+        "Walking Lunges with dumbbells 3\u00d720 steps",
+        "Battle Rope Waves 3\u00d730\u202fsec",
+        "Plank with shoulder taps 3\u00d730\u202fsec",
+        "5 min foam\u2011roll + stretch (cool\u2011down)"
+      ],
+      "duration": "80 min"
+    },
+    "Saturday": {
+      "focus": "Mobility & Skill (Light Cricket)",
+      "exercises": [
+        "5 min easy jog (warm\u2011up)",
+        "Dynamic mobility circuit \u2013 hip circles, arm circles, inchworms 5\u202fmin",
+        "Shadow batting swings 15\u202fmin",
+        "Yoga flow for hips & shoulders 20\u202fmin",
+        "10 min deep stretch (cool\u2011down)"
+      ],
+      "duration": "55 min"
+    },
+    "Sunday": {
+      "focus": "Rest / Active Recovery",
+      "exercises": [
+        "Light activity \u2013 brisk walk or easy cycling 30\u201145\u202fmin"
+      ],
+      "duration": "45 min"
+    }
+  },
+  "nutrition": {
+    "daily_protein": "116g",
+    "daily_calories": "2400\u20112500 kcal (maintenance for stay\u2011fit goal)",
+    "daily_water": "3-4L",
+    "meal_tips": [
+      "Combine pulses with whole grains (e.g., dal + brown rice or quinoa) for a complete amino\u2011acid profile.",
+      "Add paneer or low\u2011fat cottage cheese (curd) to salads or stir\u2011fries to boost protein without excess fat.",
+      "Use a protein shake made from soy or pea protein mixed with milk or almond milk post\u2011workout.",
+      "Snack on roasted chickpeas, mixed nuts, or Greek\u2011style curd with fruit to meet protein targets between meals."
+    ]
+  }
+}

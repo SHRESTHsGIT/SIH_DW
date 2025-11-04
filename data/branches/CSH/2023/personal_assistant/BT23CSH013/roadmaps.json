@@ -1,0 +1,137 @@
+[
+  {
+    "title": "FULL WEBDEV FROM SCRATCH MERN STACK Roadmap",
+    "phases": [
+      {
+        "name": "Phase 1: Modern JavaScript & TypeScript Refresher",
+        "duration": "3 weeks",
+        "topics": [
+          {
+            "name": "ES2023+ features (optional chaining, nullish coalescing, top\u2011level await, pattern matching)",
+            "completed": false
+          },
+          {
+            "name": "TypeScript fundamentals for a JavaScript\u2011first codebase (strict mode, utility types, generics)",
+            "completed": false
+          },
+          {
+            "name": "Advanced async patterns (AbortController, Promise.allSettled, concurrency limits)",
+            "completed": false
+          },
+          {
+            "name": "Module bundling & dev servers with Vite (ESM, hot\u2011module replacement)",
+            "completed": false
+          },
+          {
+            "name": "Testing basics with Jest (unit, snapshot, mock functions)",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 2: Advanced React & State Management",
+        "duration": "3 weeks",
+        "topics": [
+          {
+            "name": "React 18 concurrent features (Suspense, startTransition, useDeferredValue)",
+            "completed": false
+          },
+          {
+            "name": "Deep dive into Hooks (custom hooks, useId, useSyncExternalStore)",
+            "completed": false
+          },
+          {
+            "name": "Global state with Redux Toolkit + RTK Query (entity adapters, async thunks)",
+            "completed": false
+          },
+          {
+            "name": "Context API + useReducer for localized state",
+            "completed": false
+          },
+          {
+            "name": "Testing React components with React Testing Library & end\u2011to\u2011end with Cypress",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 3: Backend with Node, Express, and GraphQL",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Node.js 20 LTS \u2013 native ES modules, worker threads, diagnostics",
+            "completed": false
+          },
+          {
+            "name": "Express best practices (router modularization, error\u2011handling middleware, validation with Zod)",
+            "completed": false
+          },
+          {
+            "name": "Authentication & authorization (JWT, refresh tokens, OAuth2 with Passport)",
+            "completed": false
+          },
+          {
+            "name": "GraphQL API with Apollo Server (type\u2011defs, resolvers, schema stitching)",
+            "completed": false
+          },
+          {
+            "name": "Automated API testing with Supertest and Jest (integration, contract testing)",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 4: Full\u2011Stack MERN Project & DevOps Foundations",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Project scaffolding: Vite + React frontend, Express backend monorepo (pnpm workspaces)",
+            "completed": false
+          },
+          {
+            "name": "Data fetching layer with React Query (caching, optimistic updates, pagination)",
+            "completed": false
+          },
+          {
+            "name": "Dockerizing the MERN stack (multi\u2011stage builds, Docker Compose for dev)",
+            "completed": false
+          },
+          {
+            "name": "CI/CD pipeline with GitHub Actions (lint, test, build, Docker push)",
+            "completed": false
+          },
+          {
+            "name": "Cloud deployment on Vercel (frontend) & Render/DigitalOcean (backend) with environment management",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 5: Performance, Scaling & Monitoring",
+        "duration": "3 weeks",
+        "topics": [
+          {
+            "name": "SSR/SSG with Next.js (getServerSideProps, incremental static regeneration)",
+            "completed": false
+          },
+          {
+            "name": "Caching strategies: Redis for session/store, SWR for client\u2011side data",
+            "completed": false
+          },
+          {
+            "name": "Load & stress testing with k6 (scenario scripting, thresholds)",
+            "completed": false
+          },
+          {
+            "name": "Observability stack: Prometheus metrics + Grafana dashboards, structured logging with Winston",
+            "completed": false
+          },
+          {
+            "name": "Security hardening (Helmet, rate limiting, CSP, OWASP top\u201110 checklist)",
+            "completed": false
+          }
+        ]
+      }
+    ]
+  }
+]
