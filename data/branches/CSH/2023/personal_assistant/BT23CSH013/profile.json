@@ -1,19 +1,20 @@
 {
   "name": "SHRESTH SHANKHDHAR",
   "social_media_hours": "2-4hrs",
-  "sleep_hours": 7,
+  "sleep_hours": 6,
   "screen_time_hours": 4,
   "meditation_frequency": "Sometimes",
   "stress_level": "Moderate",
   "exercise_frequency": "Daily",
-  "exercise_time": "15-30 min",
+  "exercise_time": "60-90 min",
   "fitness_goals": [
     "Build muscle",
+    "Flexibility",
     "Stay fit"
   ],
   "weight": 73,
-  "height": 183,
-  "bmi": 21.8,
+  "height": 184,
+  "bmi": 21.6,
   "diet_type": "Vegetarian",
   "meals_per_day": "3",
   "water_intake": "3-4L",
@@ -22,6 +23,5 @@
   "social_media_limit": 30,
   "sleep_time": "11:00 PM",
   "tracks_protein": false,
-  "created_on": "2025-11-04T07:35:23.337873",
-  "screen_time": "4-6 hrs"
+  "created_on": "2025-11-04T08:03:59.443562"
 }

@@ -1,133 +1,143 @@
 [
   {
-    "title": "FULL WEBDEV FROM SCRATCH MERN STACK Roadmap",
+    "title": "Machine learning engineer Roadmap",
     "phases": [
       {
-        "name": "Phase 1: Modern JavaScript & TypeScript Refresher",
-        "duration": "3 weeks",
+        "name": "Phase 1: Mathematical Foundations for ML",
+        "duration": "8 weeks",
         "topics": [
           {
-            "name": "ES2023+ features (optional chaining, nullish coalescing, top\u2011level await, pattern matching)",
+            "name": "Linear Algebra \u2013 matrix operations, eigen\u2011decomposition, SVD",
+            "completed": true
+          },
+          {
+            "name": "Probability & Statistics \u2013 distributions, Bayes theorem, hypothesis testing",
+            "completed": true
+          },
+          {
+            "name": "Optimization Theory \u2013 convex sets, gradient descent, Lagrange multipliers",
             "completed": false
           },
           {
-            "name": "TypeScript fundamentals for a JavaScript\u2011first codebase (strict mode, utility types, generics)",
-            "completed": false
-          },
-          {
-            "name": "Advanced async patterns (AbortController, Promise.allSettled, concurrency limits)",
-            "completed": false
-          },
-          {
-            "name": "Module bundling & dev servers with Vite (ESM, hot\u2011module replacement)",
-            "completed": false
-          },
-          {
-            "name": "Testing basics with Jest (unit, snapshot, mock functions)",
+            "name": "Information Theory \u2013 entropy, KL divergence, mutual information",
             "completed": false
           }
         ]
       },
       {
-        "name": "Phase 2: Advanced React & State Management",
-        "duration": "3 weeks",
+        "name": "Phase 2: Core Programming & Data Engineering",
+        "duration": "6 weeks",
         "topics": [
           {
-            "name": "React 18 concurrent features (Suspense, startTransition, useDeferredValue)",
+            "name": "Advanced Python \u2013 generators, context managers, type hinting, performance profiling",
             "completed": false
           },
           {
-            "name": "Deep dive into Hooks (custom hooks, useId, useSyncExternalStore)",
+            "name": "NumPy & Pandas Mastery \u2013 vectorized pipelines, time\u2011series handling, memory optimization",
             "completed": false
           },
           {
-            "name": "Global state with Redux Toolkit + RTK Query (entity adapters, async thunks)",
+            "name": "SQL & NoSQL for ML \u2013 complex joins, window functions, data versioning",
             "completed": false
           },
           {
-            "name": "Context API + useReducer for localized state",
-            "completed": false
-          },
-          {
-            "name": "Testing React components with React Testing Library & end\u2011to\u2011end with Cypress",
+            "name": "Data Pipelines \u2013 Airflow basics, data validation with Great Expectations",
             "completed": false
           }
         ]
       },
       {
-        "name": "Phase 3: Backend with Node, Express, and GraphQL",
-        "duration": "4 weeks",
+        "name": "Phase 3: Classical Machine Learning Algorithms",
+        "duration": "8 weeks",
         "topics": [
           {
-            "name": "Node.js 20 LTS \u2013 native ES modules, worker threads, diagnostics",
+            "name": "Supervised Learning \u2013 bias\u2011variance trade\u2011off, regularization, ensemble methods (bagging, boosting)",
             "completed": false
           },
           {
-            "name": "Express best practices (router modularization, error\u2011handling middleware, validation with Zod)",
+            "name": "Unsupervised Learning \u2013 clustering (DBSCAN, spectral), dimensionality reduction (t\u2011SNE, UMAP)",
             "completed": false
           },
           {
-            "name": "Authentication & authorization (JWT, refresh tokens, OAuth2 with Passport)",
+            "name": "Model Evaluation & Selection \u2013 cross\u2011validation strategies, calibration, metrics for imbalanced data",
             "completed": false
           },
           {
-            "name": "GraphQL API with Apollo Server (type\u2011defs, resolvers, schema stitching)",
-            "completed": false
-          },
-          {
-            "name": "Automated API testing with Supertest and Jest (integration, contract testing)",
+            "name": "Scikit\u2011Learn Deep\u2011Dive \u2013 custom transformers, pipeline engineering, hyperparameter optimization with Optuna",
             "completed": false
           }
         ]
       },
       {
-        "name": "Phase 4: Full\u2011Stack MERN Project & DevOps Foundations",
-        "duration": "4 weeks",
+        "name": "Phase 4: Deep Learning Foundations",
+        "duration": "10 weeks",
         "topics": [
           {
-            "name": "Project scaffolding: Vite + React frontend, Express backend monorepo (pnpm workspaces)",
+            "name": "Neural Network Theory \u2013 back\u2011propagation math, initialization, activation functions",
             "completed": false
           },
           {
-            "name": "Data fetching layer with React Query (caching, optimistic updates, pagination)",
+            "name": "Convolutional Neural Networks \u2013 architecture design, transfer learning, segmentation basics",
             "completed": false
           },
           {
-            "name": "Dockerizing the MERN stack (multi\u2011stage builds, Docker Compose for dev)",
+            "name": "Recurrent & Attention Models \u2013 LSTM/GRU, transformer fundamentals, positional encoding",
             "completed": false
           },
           {
-            "name": "CI/CD pipeline with GitHub Actions (lint, test, build, Docker push)",
+            "name": "Framework Mastery \u2013 PyTorch advanced (custom autograd, distributed training) and TensorFlow 2.x",
             "completed": false
           },
           {
-            "name": "Cloud deployment on Vercel (frontend) & Render/DigitalOcean (backend) with environment management",
+            "name": "Training Tricks \u2013 learning\u2011rate schedules, mixed precision, gradient clipping, early stopping",
             "completed": false
           }
         ]
       },
       {
-        "name": "Phase 5: Performance, Scaling & Monitoring",
-        "duration": "3 weeks",
+        "name": "Phase 5: Production\u2011Ready ML Engineering",
+        "duration": "8 weeks",
         "topics": [
           {
-            "name": "SSR/SSG with Next.js (getServerSideProps, incremental static regeneration)",
+            "name": "Model Serialization & Serving \u2013 ONNX, TorchServe, TensorFlow Serving, FastAPI wrapper",
             "completed": false
           },
           {
-            "name": "Caching strategies: Redis for session/store, SWR for client\u2011side data",
+            "name": "MLOps Pipelines \u2013 CI/CD with GitHub Actions, Docker, Kubernetes, monitoring with Prometheus",
             "completed": false
           },
           {
-            "name": "Load & stress testing with k6 (scenario scripting, thresholds)",
+            "name": "Data Drift & Model Governance \u2013 drift detection, A/B testing, explainability with SHAP/LIME",
             "completed": false
           },
           {
-            "name": "Observability stack: Prometheus metrics + Grafana dashboards, structured logging with Winston",
+            "name": "Scalable Feature Stores \u2013 Feast, feature versioning, offline/online sync",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 6: Capstone Projects & Specialization",
+        "duration": "12 weeks",
+        "topics": [
+          {
+            "name": "Project 1 \u2013 End\u2011to\u2011end recommendation system (data ingestion \u2192 offline training \u2192 real\u2011time inference)",
             "completed": false
           },
           {
-            "name": "Security hardening (Helmet, rate limiting, CSP, OWASP top\u201110 checklist)",
+            "name": "Project 2 \u2013 Vision application using self\u2011supervised learning on a custom dataset",
+            "completed": false
+          },
+          {
+            "name": "Project 3 \u2013 Time\u2011series forecasting platform with automated retraining and alerting",
+            "completed": false
+          },
+          {
+            "name": "Specialization Sprint \u2013 Choose one: NLP (large language models), Reinforcement Learning, or Graph Neural Networks",
+            "completed": false
+          },
+          {
+            "name": "Portfolio Packaging \u2013 documentation, reproducible notebooks, GitHub repo, presentation deck",
             "completed": false
           }
         ]

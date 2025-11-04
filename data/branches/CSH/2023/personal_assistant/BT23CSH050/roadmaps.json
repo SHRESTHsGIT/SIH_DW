@@ -1,0 +1,117 @@
+[
+  {
+    "title": "devops Roadmap",
+    "phases": [
+      {
+        "name": "Phase 1: Mastering Advanced CI/CD Pipelines",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Designing multi\u2011branch Git workflows with GitHub Actions and GitLab CI",
+            "completed": false
+          },
+          {
+            "name": "Implementing immutable artifact pipelines using Nexus/Artifactory and SLSA compliance",
+            "completed": false
+          },
+          {
+            "name": "Integrating security gates (SAST, DAST, SBOM) into automated pipelines",
+            "completed": false
+          },
+          {
+            "name": "Dynamic environment provisioning for PR\u2011based testing with Terraform Cloud",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 2: Deep Dive into Infrastructure as Code (IaC)",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Advanced Terraform: modules, workspaces, policy as code with Sentinel",
+            "completed": false
+          },
+          {
+            "name": "Pulumi with TypeScript/Python for imperative\u2011declarative hybrid IaC",
+            "completed": false
+          },
+          {
+            "name": "State management strategies: remote backends, locking, drift detection",
+            "completed": false
+          },
+          {
+            "name": "Cross\u2011cloud provisioning patterns (AWS, Azure, GCP) with Terragrunt",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 3: Observability, Reliability, and SRE Practices",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Building end\u2011to\u2011end telemetry stacks (OpenTelemetry, Prometheus, Loki, Grafana)",
+            "completed": false
+          },
+          {
+            "name": "Defining and automating SLIs/SLOs and error\u2011budget policies",
+            "completed": false
+          },
+          {
+            "name": "Chaos engineering with Gremlin/Chaos Mesh for resilience testing",
+            "completed": false
+          },
+          {
+            "name": "Implementing automated incident response runbooks with Runbooks.io",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 4: GitOps and Multi\u2011Cloud Delivery",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "GitOps fundamentals with Argo CD and Flux CD",
+            "completed": false
+          },
+          {
+            "name": "Declarative cluster management across EKS, AKS, GKE using Crossplane",
+            "completed": false
+          },
+          {
+            "name": "Progressive delivery strategies (Canary, Blue/Green, Feature Flags) with Flagger",
+            "completed": false
+          },
+          {
+            "name": "Policy\u2011driven governance using OPA Gatekeeper and Kyverno",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 5: Advanced Automation & AI\u2011Ops Integration",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Building self\u2011service bots with LLMs for ticket triage and run\u2011book execution",
+            "completed": false
+          },
+          {
+            "name": "Automating cost\u2011optimization and rightsizing via Cloud Custodian and AI models",
+            "completed": false
+          },
+          {
+            "name": "Event\u2011driven orchestration with Temporal.io and serverless workflows",
+            "completed": false
+          },
+          {
+            "name": "Continuous compliance scanning using Chef Inspec and automated remediation loops",
+            "completed": false
+          }
+        ]
+      }
+    ]
+  }
+]

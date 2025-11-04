@@ -1,0 +1,103 @@
+{
+  "weekly_plan": {
+    "Monday": {
+      "focus": "Chest & Triceps",
+      "exercises": [
+        "5 min treadmill jog (warm\u2011up)",
+        "Barbell Bench Press 4\u00d78",
+        "Incline Dumbbell Press 3\u00d710",
+        "Cable Chest Flyes 3\u00d712",
+        "Weighted Dips 3\u00d710",
+        "Rope Triceps Push\u2011down 3\u00d712",
+        "5 min full\u2011body static stretch (cool\u2011down)"
+      ],
+      "duration": "75 min"
+    },
+    "Tuesday": {
+      "focus": "Back & Biceps",
+      "exercises": [
+        "5 min rowing machine (warm\u2011up)",
+        "Conventional Deadlift 4\u00d76",
+        "Pull\u2011Ups (weighted if possible) 4\u00d78",
+        "Seated Cable Row 3\u00d710",
+        "Single\u2011Arm Dumbbell Row 3\u00d712 each side",
+        "EZ\u2011Bar Curl 3\u00d710",
+        "Hammer Curl 3\u00d712",
+        "5 min static stretch (cool\u2011down)"
+      ],
+      "duration": "75 min"
+    },
+    "Wednesday": {
+      "focus": "Legs & Core",
+      "exercises": [
+        "5 min stationary bike (warm\u2011up)",
+        "Back Squat 4\u00d78",
+        "Walking Dumbbell Lunges 3\u00d712 each leg",
+        "Leg Press 3\u00d710",
+        "Romanian Deadlift 3\u00d710",
+        "Standing Calf Raise 4\u00d715",
+        "Plank 3\u00d760\u202fs",
+        "Hanging Leg Raise 3\u00d712",
+        "5 min full\u2011body stretch (cool\u2011down)"
+      ],
+      "duration": "80 min"
+    },
+    "Thursday": {
+      "focus": "Shoulders & Abs",
+      "exercises": [
+        "5 min jump rope (warm\u2011up)",
+        "Overhead Barbell Press 4\u00d78",
+        "Dumbbell Lateral Raise 3\u00d712",
+        "Plate Front Raise 3\u00d712",
+        "Reverse Pec\u2011Deck Fly 3\u00d715",
+        "Cable Upright Row 3\u00d710",
+        "Russian Twist (medicine ball) 3\u00d720",
+        "Bicycle Crunches 3\u00d720",
+        "5 min static stretch (cool\u2011down)"
+      ],
+      "duration": "70 min"
+    },
+    "Friday": {
+      "focus": "Full\u2011Body Power & Conditioning",
+      "exercises": [
+        "5 min dynamic mobility circuit (warm\u2011up)",
+        "Power Clean 4\u00d75",
+        "Push Press 4\u00d76",
+        "Bulgarian Split Squat (dumbbell) 3\u00d710 each leg",
+        "Chin\u2011Ups 3\u00d78",
+        "Kettlebell Swings 3\u00d715",
+        "Farmer\u2019s Walk 3\u00d730\u202fs",
+        "5 min full\u2011body stretch (cool\u2011down)"
+      ],
+      "duration": "85 min"
+    },
+    "Saturday": {
+      "focus": "Active Recovery & Mobility",
+      "exercises": [
+        "Brisk walk or light jog 20\u202fmin",
+        "Sun Salutation yoga flow 15\u202fmin",
+        "Foam rolling major muscle groups 10\u202fmin",
+        "Static stretching routine 10\u202fmin"
+      ],
+      "duration": "55 min"
+    },
+    "Sunday": {
+      "focus": "Rest / Active Recovery",
+      "exercises": [
+        "Light activity (e.g., casual walk, stretching) as desired"
+      ],
+      "duration": "0 min"
+    }
+  },
+  "nutrition": {
+    "daily_protein": "104\u202fg",
+    "daily_calories": "\u22482,700\u202fkcal (adjust \u00b1200\u202fkcal based on weekly weight change)",
+    "daily_water": "3\u20114\u202fL",
+    "meal_tips": [
+      "Spread protein intake over 4\u20115 meals (\u224820\u201125\u202fg per meal) to maximize muscle protein synthesis.",
+      "Combine high\u2011quality vegetarian proteins (e.g., paneer, Greek yogurt, soy tofu, lentils) with a source of leucine\u2011rich foods like roasted chickpeas or a scoop of vegetarian whey/pea protein powder.",
+      "Post\u2011workout (within 30\u201145\u202fmin) consume a fast\u2011digesting carb + protein combo such as banana + 30\u202fg whey\u2011type soy protein shake or a bowl of poha with curd.",
+      "Include healthy fats (nuts, seeds, avocado) and complex carbs (brown rice, whole\u2011wheat roti, quinoa) to meet calorie goals and support hormone health."
+    ]
+  }
+}

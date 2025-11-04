@@ -1,20 +1,16 @@
 {
-  "generated_on": "2025-11-04T07:51:26.501446",
+  "generated_on": "2025-11-04T08:10:24.071542",
   "date": "2025-11-04",
   "todos": [
     {
       "category": "\ud83c\udf05 Morning Routine",
       "tasks": [
         {
-          "task": "Wake up by 7:00\u202fAM",
+          "task": "Wake up by 7:00\u202fAM; 10\u2011min meditation",
           "completed": false
         },
         {
-          "task": "15\u2011min meditation",
-          "completed": false
-        },
-        {
-          "task": "Breakfast (e.g., 2 boiled eggs, 1 cup dal, 100\u202fg paneer, 250\u202fml milk) \u2013 ~30\u202fg protein, start water intake",
+          "task": "Breakfast + 30\u202fg protein (paneer & curd) + 500\u202fml water",
           "completed": false
         }
       ]
@@ -35,7 +31,7 @@
           "completed": false
         },
         {
-          "task": "Attend OC lecture 12:00\u201113:00",
+          "task": "Attend OC session 12:00\u201113:00 (DW PROJECT \u2013 high priority at 12:00)",
           "completed": false
         }
       ]
@@ -44,7 +40,11 @@
       "category": "\ud83c\udfaf Learning",
       "tasks": [
         {
-          "task": "Study TypeScript fundamentals (strict mode, utility types, generics) \u2013 30\u202fmin",
+          "task": "Machine Learning Roadmap \u2013 Optimization Theory (convex sets, gradient descent) \u2013 30\u202fmin",
+          "completed": false
+        },
+        {
+          "task": "Machine Learning Roadmap \u2013 Advanced Python (generators, type hinting) \u2013 30\u202fmin",
           "completed": false
         }
       ]
@@ -53,7 +53,11 @@
       "category": "\ud83d\udcaa Fitness",
       "tasks": [
         {
-          "task": "Upper\u2011body strength workout 17:00\u201118:15 (5\u202fmin jump rope, incline dumbbell press 4\u00d78, seated cable row 3\u00d710) + post\u2011workout protein shake (250\u202fml milk + 30\u202fg paneer) \u2013 ~20\u202fg protein",
+          "task": "Pull workout (incl. dynamic warm\u2011up) \u2013 78\u202fmin",
+          "completed": false
+        },
+        {
+          "task": "Post\u2011workout protein shake (\u224820\u202fg protein) + 500\u202fml water",
           "completed": false
         }
       ]
@@ -62,15 +66,11 @@
       "category": "\ud83c\udf19 Evening Routine",
       "tasks": [
         {
-          "task": "Dinner (e.g., 150\u202fg paneer curry + 1 cup dal + mixed veg salad) \u2013 ~38\u202fg protein, finish water intake for the day",
+          "task": "Dinner + 38\u202fg protein (dal, paneer, roti) + 500\u202fml water",
           "completed": false
         },
         {
-          "task": "Social media max 30\u202fmin (after 20:00)",
-          "completed": false
-        },
-        {
-          "task": "Sleep by 11:00\u202fPM (aim for 7\u202fh)",
+          "task": "Social media \u226430\u202fmin; wind down; sleep by 11:00\u202fPM (target 6\u202fh)",
           "completed": false
         }
       ]

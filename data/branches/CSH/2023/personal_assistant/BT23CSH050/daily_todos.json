@@ -1,0 +1,84 @@
+{
+  "generated_on": "2025-11-04T08:13:58.213593",
+  "date": "2025-11-04",
+  "todos": [
+    {
+      "category": "\ud83c\udf05 Morning Routine",
+      "tasks": [
+        {
+          "task": "Wake up by 7:00\u202fAM",
+          "completed": false
+        },
+        {
+          "task": "15\u2011min meditation",
+          "completed": false
+        },
+        {
+          "task": "Breakfast (paneer 100\u202fg, dal 50\u202fg, milk 200\u202fml) \u2013 approx. 26\u202fg protein",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83d\udcda Academic",
+      "tasks": [
+        {
+          "task": "Attend scheduled classes: CN 09:00\u201110:00, ToC 10:00\u201111:00, ToC Tut 11:00\u201112:00, OC 12:00\u201113:00",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\u26a1\ufe0f High Priority",
+      "tasks": [
+        {
+          "task": "LA project meeting at 13:00",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83c\udfaf Learning",
+      "tasks": [
+        {
+          "task": "DevOps Roadmap \u2013 Design multi\u2011branch Git workflows with GitHub Actions (30\u202fmin)",
+          "completed": false
+        },
+        {
+          "task": "DevOps Roadmap \u2013 Integrate security gates (SAST, DAST, SBOM) into pipelines (30\u202fmin)",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83d\udcaa Fitness",
+      "tasks": [
+        {
+          "task": "Back & Biceps workout (75\u202fmin): 5\u202fmin rowing warm\u2011up, Deadlift 4\u00d76, Weighted Pull\u2011Ups 4\u00d78",
+          "completed": false
+        },
+        {
+          "task": "Post\u2011workout protein shake (milk 250\u202fml + 1\u202ftbsp peanut butter) \u2013 ~10\u202fg protein",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "category": "\ud83c\udf19 Evening Routine",
+      "tasks": [
+        {
+          "task": "Dinner (dal 150\u202fg, paneer 100\u202fg, curd 100\u202fg) \u2013 approx. 34\u202fg protein",
+          "completed": false
+        },
+        {
+          "task": "Limit social media to 30\u202fmin total",
+          "completed": false
+        },
+        {
+          "task": "Sleep by 11:00\u202fPM (target 5\u202fh)",
+          "completed": false
+        }
+      ]
+    }
+  ]
+}
