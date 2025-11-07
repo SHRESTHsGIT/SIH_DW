@@ -14,7 +14,14 @@ st.set_page_config(
     layout="wide"
 )
 
-API_BASE_URL = "http://localhost:8000"
+import streamlit as st
+import os
+
+# Check Streamlit secrets first, then env vars, then default to localhost
+if hasattr(st, 'secrets') and "API_BASE_URL" in st.secrets:
+    API_BASE_URL = st.secrets["API_BASE_URL"]
+else:
+    API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 
 # Initialize services
 wellness_service = WellnessService()

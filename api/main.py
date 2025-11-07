@@ -346,4 +346,7 @@ async def student_face_login(
         raise HTTPException(status_code=500, detail=f"Face login failed: {error_msg}")
     
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    # Use PORT env variable (Render) or default to 8000 (local)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
