@@ -3,101 +3,110 @@
     "Monday": {
       "focus": "Chest & Triceps",
       "exercises": [
-        "5 min treadmill jog (warm\u2011up)",
+        "5 min dynamic warm\u2011up (jumping jacks, arm circles, torso twists)",
         "Barbell Bench Press 4\u00d78",
         "Incline Dumbbell Press 3\u00d710",
-        "Cable Chest Flyes 3\u00d712",
-        "Weighted Dips 3\u00d710",
+        "Cable Chest Fly 3\u00d712",
+        "Weighted Dips 3\u00d78",
         "Rope Triceps Push\u2011down 3\u00d712",
-        "5 min full\u2011body static stretch (cool\u2011down)"
+        "Overhead Dumbbell Triceps Extension 3\u00d710",
+        "5 min static stretching (pec & triceps)",
+        "10 min seated meditation (focus on breath) \u2013 improves focus, reduces cortisol"
       ],
-      "duration": "75 min"
+      "duration": "80 min"
     },
     "Tuesday": {
       "focus": "Back & Biceps",
       "exercises": [
-        "5 min rowing machine (warm\u2011up)",
-        "Conventional Deadlift 4\u00d76",
-        "Pull\u2011Ups (weighted if possible) 4\u00d78",
+        "5 min dynamic warm\u2011up (band pull\u2011aparts, cat\u2011cow stretch)",
+        "Pull\u2011ups (wide grip) 4\u00d76",
+        "Bent\u2011over Barbell Row 4\u00d78",
         "Seated Cable Row 3\u00d710",
-        "Single\u2011Arm Dumbbell Row 3\u00d712 each side",
-        "EZ\u2011Bar Curl 3\u00d710",
-        "Hammer Curl 3\u00d712",
-        "5 min static stretch (cool\u2011down)"
+        "Lat Pulldown 3\u00d712",
+        "Dumbbell Hammer Curl 3\u00d710",
+        "Concentration Curl 3\u00d712 each arm",
+        "5 min static stretching (lats & biceps)",
+        "5 min guided meditation \u2013 enhances muscle recovery"
       ],
       "duration": "75 min"
     },
     "Wednesday": {
-      "focus": "Legs & Core",
+      "focus": "Legs (Quads, Hamstrings, Calves)",
       "exercises": [
-        "5 min stationary bike (warm\u2011up)",
-        "Back Squat 4\u00d78",
-        "Walking Dumbbell Lunges 3\u00d712 each leg",
-        "Leg Press 3\u00d710",
+        "5 min dynamic warm\u2011up (leg swings, bodyweight squats)",
+        "Barbell Back Squat 4\u00d78",
         "Romanian Deadlift 3\u00d710",
+        "Leg Press 3\u00d712",
+        "Walking Lunges with Dumbbells 3\u00d712 each leg",
+        "Leg Curl Machine 3\u00d715",
         "Standing Calf Raise 4\u00d715",
-        "Plank 3\u00d760\u202fs",
-        "Hanging Leg Raise 3\u00d712",
-        "5 min full\u2011body stretch (cool\u2011down)"
-      ],
-      "duration": "80 min"
-    },
-    "Thursday": {
-      "focus": "Shoulders & Abs",
-      "exercises": [
-        "5 min jump rope (warm\u2011up)",
-        "Overhead Barbell Press 4\u00d78",
-        "Dumbbell Lateral Raise 3\u00d712",
-        "Plate Front Raise 3\u00d712",
-        "Reverse Pec\u2011Deck Fly 3\u00d715",
-        "Cable Upright Row 3\u00d710",
-        "Russian Twist (medicine ball) 3\u00d720",
-        "Bicycle Crunches 3\u00d720",
-        "5 min static stretch (cool\u2011down)"
-      ],
-      "duration": "70 min"
-    },
-    "Friday": {
-      "focus": "Full\u2011Body Power & Conditioning",
-      "exercises": [
-        "5 min dynamic mobility circuit (warm\u2011up)",
-        "Power Clean 4\u00d75",
-        "Push Press 4\u00d76",
-        "Bulgarian Split Squat (dumbbell) 3\u00d710 each leg",
-        "Chin\u2011Ups 3\u00d78",
-        "Kettlebell Swings 3\u00d715",
-        "Farmer\u2019s Walk 3\u00d730\u202fs",
-        "5 min full\u2011body stretch (cool\u2011down)"
+        "5 min static stretching (hamstrings, quads, calves)",
+        "10 min mindfulness meditation \u2013 supports hormonal balance"
       ],
       "duration": "85 min"
     },
-    "Saturday": {
-      "focus": "Active Recovery & Mobility",
+    "Thursday": {
+      "focus": "Shoulders & Core",
       "exercises": [
-        "Brisk walk or light jog 20\u202fmin",
-        "Sun Salutation yoga flow 15\u202fmin",
-        "Foam rolling major muscle groups 10\u202fmin",
-        "Static stretching routine 10\u202fmin"
+        "5 min dynamic warm\u2011up (arm circles, scapular push\u2011ups)",
+        "Standing Barbell Military Press 4\u00d78",
+        "Dumbbell Lateral Raise 3\u00d712",
+        "Plate Front Raise 3\u00d712",
+        "Reverse Pec\u2011Deck Fly 3\u00d715",
+        "Arnold Press 3\u00d710",
+        "Plank 3\u00d760\u202fs",
+        "Hanging Leg Raise 3\u00d712",
+        "5 min static stretching (deltoids, core)",
+        "5 min breathing meditation \u2013 improves postural control"
       ],
-      "duration": "55 min"
+      "duration": "80 min"
+    },
+    "Friday": {
+      "focus": "Full\u2011Body Functional + HIIT",
+      "exercises": [
+        "5 min dynamic warm\u2011up (high knees, inchworms)",
+        "Kettlebell Swing 4\u00d715",
+        "Box Jumps 3\u00d712",
+        "Battle Ropes 4\u00d730\u202fs",
+        "Medicine Ball Slam 3\u00d715",
+        "Farmer's Walk (dumbbells) 3\u00d740\u202fm",
+        "Burpees 3\u00d712",
+        "5 min cool\u2011down walk",
+        "5 min gratitude meditation \u2013 aids mental resilience"
+      ],
+      "duration": "90 min"
+    },
+    "Saturday": {
+      "focus": "Mobility, Yoga & Meditation",
+      "exercises": [
+        "5 min gentle warm\u2011up (neck rolls, wrist circles)",
+        "Sun Salutation A \u00d75 rounds",
+        "Sun Salutation B \u00d73 rounds",
+        "Standing Forward Fold 2\u00d730\u202fs",
+        "Pigeon Pose 2\u00d730\u202fs each side",
+        "Seated Forward Bend 2\u00d730\u202fs",
+        "15 min guided meditation (body scan) \u2013 reduces stress, supports muscle growth"
+      ],
+      "duration": "60 min"
     },
     "Sunday": {
       "focus": "Rest / Active Recovery",
       "exercises": [
-        "Light activity (e.g., casual walk, stretching) as desired"
+        "Light activity \u2013 30\u2011min brisk walk or easy cycling",
+        "Full\u2011body gentle stretching 10\u202fmin"
       ],
-      "duration": "0 min"
+      "duration": "40 min"
     }
   },
   "nutrition": {
-    "daily_protein": "104\u202fg",
-    "daily_calories": "\u22482,700\u202fkcal (adjust \u00b1200\u202fkcal based on weekly weight change)",
-    "daily_water": "3\u20114\u202fL",
+    "daily_protein": "104g",
+    "daily_calories": "2,700 kcal (approx. 15\u201117\u202fkcal/kg for muscle gain)",
+    "daily_water": "3-4L",
     "meal_tips": [
-      "Spread protein intake over 4\u20115 meals (\u224820\u201125\u202fg per meal) to maximize muscle protein synthesis.",
-      "Combine high\u2011quality vegetarian proteins (e.g., paneer, Greek yogurt, soy tofu, lentils) with a source of leucine\u2011rich foods like roasted chickpeas or a scoop of vegetarian whey/pea protein powder.",
-      "Post\u2011workout (within 30\u201145\u202fmin) consume a fast\u2011digesting carb + protein combo such as banana + 30\u202fg whey\u2011type soy protein shake or a bowl of poha with curd.",
-      "Include healthy fats (nuts, seeds, avocado) and complex carbs (brown rice, whole\u2011wheat roti, quinoa) to meet calorie goals and support hormone health."
+      "Combine pulses with whole grains (e.g., dal + brown rice) for a complete amino\u2011acid profile.",
+      "Include 150\u2011200\u202fg of paneer or low\u2011fat Greek yogurt in meals to boost protein intake.",
+      "Snack on roasted chickpeas, almonds, or peanut butter on whole\u2011grain toast for extra calories and protein.",
+      "Use whey or plant\u2011based protein powder (pea/rice) in post\u2011workout smoothies with milk, banana, and flaxseed."
     ]
   }
 }

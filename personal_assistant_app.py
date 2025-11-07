@@ -85,7 +85,64 @@ def show_auth():
                     st.error(f"❌ Login error: {str(e)}")
     
     with tab2:
-        st.info("Face recognition login coming soon!")
+        st.markdown("#### 📸 Face Recognition Login")
+        st.info("Capture your face to login automatically")
+        
+        # Branch and year selection for face login
+        try:
+            response = requests.get(f"{API_BASE_URL}/api/branches")
+            if response.status_code == 200:
+                branches = response.json()
+            else:
+                branches = []
+        except:
+            branches = []
+            st.error("Could not fetch branches")
+        
+        if branches:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                branch_options = [f"{b['branch_code']} - {b['branch_name']}" for b in branches]
+                selected_branch = st.selectbox("Select Branch", branch_options, key="face_branch")
+                branch_code = selected_branch.split(" - ")[0] if selected_branch else ""
+            
+            with col2:
+                year = st.selectbox("Select Year", ["2022", "2023", "2024", "2025"], index=1, key="face_year")
+            
+            # Camera input for face login
+            face_image = st.camera_input("📷 Capture your face", key="face_login")
+            
+            if face_image and branch_code and year:
+                if st.button("🔍 Login with Face", type="primary", use_container_width=True):
+                    with st.spinner("🤖 Recognizing your face..."):
+                        try:
+                            # Use the face recognition API to identify student
+                            files = {"face_image": ("face.jpg", face_image.getvalue(), "image/jpeg")}
+                            data = {"branch_code": branch_code, "year": year}
+                            
+                            # Call a new API endpoint for face login
+                            response = requests.post(f"{API_BASE_URL}/api/student/face-login",
+                                                   files=files, data=data)
+                            
+                            if response.status_code == 200:
+                                result = response.json()
+                                st.session_state.pa_logged_in = True
+                                st.session_state.pa_student_data = result["student"]
+                                st.success(f"✅ Welcome, {result['student']['name']}!")
+                                st.balloons()
+                                st.rerun()
+                            else:
+                                error_msg = response.json().get("detail", "Face not recognized")
+                                st.error(f"❌ {error_msg}")
+                                st.error("💡 Try with better lighting or manual login")
+                        
+                        except requests.exceptions.ConnectionError:
+                            st.error("❌ Could not connect to API server")
+                        except Exception as e:
+                            st.error(f"❌ Face login error: {str(e)}")
+        else:
+            st.warning("No branches available for face login")
 
 def show_onboarding():
     st.markdown("## 🎉 Welcome! Let's Set Up Your Personal Assistant")

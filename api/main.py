@@ -288,6 +288,62 @@ def get_qr_code(branch_code: str, year: str, roll_no: str):
         return FileResponse(qr_path)
     else:
         raise HTTPException(status_code=404, detail="QR code not found")
+## api/main.py - ADD THIS NEW ENDPOINT
+# Add after the existing student_login endpoint (around line 1673)
 
+@app.post("/api/student/face-login")
+async def student_face_login(
+    branch_code: str = Form(...),
+    year: str = Form(...),
+    face_image: UploadFile = File(...)
+):
+    """Login student using face recognition"""
+    try:
+        print(f"📸 Face login request for {branch_code}/{year}")
+        
+        # Read face image
+        face_image_bytes = await face_image.read()
+        print(f"📷 Face image read: {len(face_image_bytes)} bytes")
+        
+        if len(face_image_bytes) == 0:
+            print("❌ Empty face image")
+            raise HTTPException(status_code=400, detail="Empty face image received")
+        
+        # Recognize face
+        print("🔍 Starting face recognition for login...")
+        recognized_roll_no = face_service.recognize_face(face_image_bytes, branch_code, year)
+        
+        if recognized_roll_no:
+            print(f"✅ Face recognized as: {recognized_roll_no}")
+            
+            # Get student data
+            students = data_service.get_students(branch_code, year)
+            student = next((s for s in students if s['roll_no'] == recognized_roll_no), None)
+            
+            if student:
+                # Add branch and year to student data
+                student['branch'] = branch_code
+                student['year'] = year
+                
+                print(f"✅ Login successful for: {student['name']}")
+                return {
+                    "success": True,
+                    "student": student,
+                    "message": f"Welcome back, {student['name']}!"
+                }
+            else:
+                print(f"❌ Student data not found for: {recognized_roll_no}")
+                raise HTTPException(status_code=404, detail="Student data not found")
+        else:
+            print("❌ Face not recognized")
+            raise HTTPException(status_code=401, detail="Face not recognized. Please try again with better lighting or use manual login.")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_msg = str(e)
+        print(f"❌ Unexpected error in face login: {error_msg}")
+        raise HTTPException(status_code=500, detail=f"Face login failed: {error_msg}")
+    
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

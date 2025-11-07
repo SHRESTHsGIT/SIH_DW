@@ -1,95 +1,108 @@
 {
   "weekly_plan": {
     "Monday": {
-      "focus": "Push \u2013 Chest, Shoulders, Triceps",
+      "focus": "Upper Body Push (Chest, Shoulders, Triceps)",
       "exercises": [
-        "Dynamic Warm\u2011up: 5\u202fmin (jumping jacks, arm circles, leg swings)",
-        "Incline Barbell Bench Press 4\u00d78",
-        "Dumbbell Arnold Press 3\u00d710",
-        "Cable Chest Fly (mid\u2011level pulley) 3\u00d712",
-        "Overhead Triceps Rope Extension 3\u00d712",
-        "Cool\u2011down: 5\u202fmin static stretch (pecs, delts, triceps)"
+        "Dynamic warm\u2011up (arm circles, band pull\u2011aparts) 10 min",
+        "Barbell bench press 4\u00d78",
+        "Incline dumbbell press 3\u00d710",
+        "Arnold press 3\u00d712",
+        "Cable lateral raise 3\u00d715",
+        "Triceps rope push\u2011down 3\u00d712",
+        "Push\u2011ups 2\u00d720",
+        "Static stretching (chest, shoulders) 5 min",
+        "Guided meditation (10 min) \u2013 improves focus, reduces stress, accelerates muscle recovery"
       ],
-      "duration": "75\u202fmin"
+      "duration": "75 min"
     },
     "Tuesday": {
-      "focus": "Pull \u2013 Back & Biceps",
+      "focus": "Lower Body (Quads, Hamstrings, Glutes)",
       "exercises": [
-        "Dynamic Warm\u2011up: 5\u202fmin (band pull\u2011aparts, torso rotations)",
-        "Weighted Pull\u2011Ups 4\u00d76",
-        "T\u2011Bar Row (landmine) 4\u00d78",
-        "Single\u2011Arm Cable Face Pull 3\u00d712 each side",
-        "Hammer Curl with Rope attachment 3\u00d710",
-        "Cool\u2011down: 5\u202fmin static stretch (lats, rear delts, forearms)"
+        "Dynamic warm\u2011up (leg swings, bodyweight squats) 10 min",
+        "Back squat 4\u00d78",
+        "Romanian deadlift 3\u00d710",
+        "Leg press 3\u00d712",
+        "Walking lunges with dumbbells 3\u00d720 (10 each leg)",
+        "Seated calf raise 4\u00d715",
+        "Hamstring curl machine 3\u00d712",
+        "Cool\u2011down stretch (hamstrings, quads, glutes) 5 min"
       ],
-      "duration": "78\u202fmin"
+      "duration": "80 min"
     },
     "Wednesday": {
-      "focus": "Legs & Explosive Power",
+      "focus": "Pull (Back & Biceps)",
       "exercises": [
-        "Dynamic Warm\u2011up: 5\u202fmin (bodyweight squats, lunges, high knees)",
-        "Barbell Front Squat 4\u00d76",
-        "Walking Lunges with Dumbbells 3\u00d712 each leg",
-        "Romanian Deadlift 3\u00d78",
-        "Box Jumps (24\u2011inch) 4\u00d75",
-        "Cool\u2011down: 5\u202fmin static stretch (quads, hamstrings, glutes)"
+        "Dynamic warm\u2011up (band rows, shoulder rolls) 10 min",
+        "Pull\u2011ups (assisted if needed) 4\u00d76",
+        "Barbell bent\u2011over row 4\u00d78",
+        "Single\u2011arm dumbbell row 3\u00d710 each side",
+        "Face pull 3\u00d715",
+        "EZ\u2011bar curl 3\u00d712",
+        "Hammer curl 3\u00d712",
+        "Static stretch (lat, biceps) 5 min",
+        "Guided meditation (10 min) \u2013 enhances nervous\u2011system recovery and concentration"
       ],
-      "duration": "85\u202fmin"
+      "duration": "75 min"
     },
     "Thursday": {
-      "focus": "Cricket Agility & Core Stability",
+      "focus": "Cricket\u2011Specific Conditioning & Core",
       "exercises": [
-        "Dynamic Warm\u2011up: 5\u202fmin (agility ladder \u2013 1\u2011foot, 2\u2011foot, lateral)",
-        "Agility Ladder Drills (varied patterns) 6\u202fmin",
-        "Medicine Ball Rotational Throw (oblique focus) 3\u00d78 each side",
-        "Hanging Leg Raises 3\u00d712",
-        "Plank with Shoulder Tap 3\u00d730\u202fs",
-        "Cool\u2011down: 5\u202fmin static stretch (hip flexors, lower back, shoulders)"
+        "Dynamic warm\u2011up (high knees, skipping) 10 min",
+        "Agility ladder drills 10 min",
+        "Squat jumps 3\u00d710",
+        "Medicine\u2011ball rotational throws 3\u00d78 each side",
+        "Box jumps 3\u00d78",
+        "Hanging leg raise 3\u00d712",
+        "Russian twists with plate 3\u00d720",
+        "Plank 3\u00d760 sec",
+        "Cool\u2011down mobility (hip flexor, thoracic spine) 5 min",
+        "Guided meditation (5 min) \u2013 sharpens mental stamina for bowling"
       ],
-      "duration": "70\u202fmin"
+      "duration": "85 min"
     },
     "Friday": {
-      "focus": "Full\u2011Body Power & Speed",
+      "focus": "Full\u2011Body Hypertrophy Circuit",
       "exercises": [
-        "Dynamic Warm\u2011up: 5\u202fmin (butt kicks, A\u2011skips, arm swings)",
-        "Power Clean 4\u00d74",
-        "Dumbbell Push Press 3\u00d76",
-        "Kettlebell Swings 4\u00d715",
-        "Sprint Intervals \u2013 30\u202fm x\u202f8 (full effort, walk back recovery) 10\u202fmin",
-        "Cool\u2011down: 5\u202fmin static stretch (full body)"
+        "Dynamic warm\u2011up (jump rope, arm swings) 10 min",
+        "Kettlebell swing 3\u00d715",
+        "Dumbbell clean & press 3\u00d710",
+        "Bulgarian split squat 3\u00d712 each leg",
+        "Chest fly machine 3\u00d712",
+        "Lat pulldown 3\u00d712",
+        "Cable rope overhead triceps extension 3\u00d715",
+        "Concentration curl 3\u00d712 each arm",
+        "Static stretch (full body) 5 min",
+        "Guided meditation (10 min) \u2013 aids hormonal balance and muscle growth"
       ],
-      "duration": "85\u202fmin"
+      "duration": "80 min"
     },
     "Saturday": {
-      "focus": "Mobility, Flexibility & Recovery",
+      "focus": "Active Recovery, Yoga & Meditation",
       "exercises": [
-        "Dynamic Warm\u2011up: 5\u202fmin (gentle jog, arm swings)",
-        "Sun Salutation Yoga Flow (5 rounds) 15\u202fmin",
-        "Hip Flexor Stretch \u2013 kneeling, hold 30\u202fs each side 2\u00d7",
-        "Pigeon Pose \u2013 hold 45\u202fs each side 2\u00d7",
-        "Foam Rolling \u2013 quads, IT band, upper back 10\u202fmin",
-        "Cool\u2011down: 5\u202fmin deep breathing & meditation"
+        "Brisk walk or easy cycling 30 min",
+        "Yoga flow (sun salutations, hip openers, shoulder stretches) 20 min",
+        "Guided meditation (15 min) \u2013 reduces cortisol, improves sleep quality"
       ],
-      "duration": "65\u202fmin"
+      "duration": "65 min"
     },
     "Sunday": {
-      "focus": "Rest / Active Recovery",
+      "focus": "Rest / Light Activity",
       "exercises": [
-        "Light activity \u2013 brisk walk or easy cycling 30\u201145\u202fmin",
-        "Optional: gentle stretching or yoga 10\u201115\u202fmin"
+        "Light stretching or walking 30 min",
+        "Optional breathing meditation 5\u201310 min"
       ],
-      "duration": "45\u202fmin"
+      "duration": "30 min"
     }
   },
   "nutrition": {
-    "daily_protein": "116\u202fg (\u22481.6\u202fg\u202f\u00d7\u202fbody\u202fkg)",
-    "daily_calories": "\u22482\u202f700\u202fkcal (maintenance\u202f+\u202f~300\u202fkcal surplus for muscle gain)",
-    "daily_water": "3\u20114\u202fL",
+    "daily_protein": "116g",
+    "daily_calories": "2800\u20113000 kcal",
+    "daily_water": "3-4L",
     "meal_tips": [
-      "Combine legumes with cereals each meal (e.g., dal with rice or whole\u2011wheat chapati) to get a complete amino\u2011acid profile.",
-      "Include 30\u201140\u202fg of high\u2011protein dairy per meal \u2013 paneer, Greek\u2011style curd, or soy milk \u2013 to boost protein without excess carbs.",
-      "Snack on roasted chickpeas, mixed nuts (almonds, walnuts) or a protein shake made with pea\u2011protein or whey\u2011isolates (if lacto\u2011vegetarian).",
-      "Add a source of healthy fats (flaxseed oil, avocado, ghee) and vitamin\u202fB12 fortified foods to support overall recovery."
+      "Combine dal (lentils) with rice or whole\u2011grain rotis each meal for a complete amino\u2011acid profile.",
+      "Include 150\u2011200\u202fg of paneer, tofu, or soy\u2011based tempeh in lunch/dinner to boost protein without excess fat.",
+      "Post\u2011workout, consume 30\u202fg of whey or pea protein mixed with milk or water within 30\u202fminutes for rapid muscle repair.",
+      "Snack on a handful of almonds, roasted chickpeas, or Greek\u2011style curd to keep protein intake steady throughout the day."
     ]
   }
 }

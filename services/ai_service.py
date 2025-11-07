@@ -93,7 +93,7 @@ CRITICAL: Return ONLY valid JSON, no other text:
         
         user_context = f"\n\nStudent's specific situation/constraints:\n{user_input}" if user_input else ""
         
-        prompt = f"""You are a certified fitness trainer. Create a PERSONALIZED weekly workout plan for an Indian college student.
+        prompt = f"""You are a certified fitness trainer. Create a PERSONALIZED weekly workout plan for an Indian college student.Make sure to mention meditation in the plan and also include its benefits for the student.
 
 Student Profile:
 - Height: {height} cm

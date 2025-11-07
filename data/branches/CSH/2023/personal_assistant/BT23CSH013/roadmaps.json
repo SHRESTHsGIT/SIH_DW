@@ -143,5 +143,124 @@
         ]
       }
     ]
+  },
+  {
+    "title": "DEVOP Roadmap",
+    "phases": [
+      {
+        "name": "Phase 1: Foundation Refresh & Mindset",
+        "duration": "2 weeks",
+        "topics": [
+          {
+            "name": "Linux command line deep dive (file systems, permissions, networking)",
+            "completed": false
+          },
+          {
+            "name": "Version control best practices (Git branching, rebasing, hooks)",
+            "completed": false
+          },
+          {
+            "name": "Fundamentals of networking for DevOps (TCP/IP, DNS, load balancing)",
+            "completed": false
+          },
+          {
+            "name": "Introduction to Agile & SRE principles (SLIs, SLOs, error budgets)",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 2: Core Tool Mastery",
+        "duration": "3 weeks",
+        "topics": [
+          {
+            "name": "Docker deep dive (multi\u2011stage builds, compose, security scanning)",
+            "completed": false
+          },
+          {
+            "name": "Kubernetes essentials (pods, services, deployments, Helm charts)",
+            "completed": false
+          },
+          {
+            "name": "Configuration management with Ansible (playbooks, vault, dynamic inventories)",
+            "completed": false
+          },
+          {
+            "name": "Monitoring & logging stack (Prometheus, Grafana, Loki/ELK basics)",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 3: Cloud Platforms & Infrastructure as Code",
+        "duration": "3 weeks",
+        "topics": [
+          {
+            "name": "AWS core services for DevOps (EC2, S3, IAM, VPC, CloudWatch)",
+            "completed": false
+          },
+          {
+            "name": "Infrastructure as Code with Terraform (state management, modules, workspaces)",
+            "completed": false
+          },
+          {
+            "name": "Serverless basics (AWS Lambda, API Gateway, CI/CD for serverless)",
+            "completed": false
+          },
+          {
+            "name": "Cost\u2011optimization & security hardening in the cloud",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 4: CI/CD Pipelines & Automation",
+        "duration": "3 weeks",
+        "topics": [
+          {
+            "name": "Building end\u2011to\u2011end pipelines with GitHub Actions (matrix builds, secrets, artifacts)",
+            "completed": false
+          },
+          {
+            "name": "Advanced Jenkins pipelines (declarative vs scripted, shared libraries)",
+            "completed": false
+          },
+          {
+            "name": "Automated testing integration (unit, integration, contract tests) in pipelines",
+            "completed": false
+          },
+          {
+            "name": "Release strategies (blue/green, canary, feature flags) and rollback procedures",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "name": "Phase 5: Real\u2011World Project, Portfolio & Interview Prep",
+        "duration": "4 weeks",
+        "topics": [
+          {
+            "name": "Design & implement a full\u2011stack CI/CD project (e.g., microservice app on k8s with Terraform & GitHub Actions)",
+            "completed": false
+          },
+          {
+            "name": "Document the project in a professional portfolio (README, architecture diagram, CI badge)",
+            "completed": false
+          },
+          {
+            "name": "Mock DevOps interview drills (scenario questions, whiteboard design, troubleshooting)",
+            "completed": false
+          },
+          {
+            "name": "Resume & LinkedIn tailoring for DevOps internships (keywords, achievements, project showcase)",
+            "completed": false
+          },
+          {
+            "name": "Networking & outreach plan (GitHub contributions, community meetups, open\u2011source PRs)",
+            "completed": false
+          }
+        ]
+      }
+    ]
   }
 ]

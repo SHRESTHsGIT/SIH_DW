@@ -1,16 +1,24 @@
 {
-  "generated_on": "2025-11-04T08:10:24.071542",
-  "date": "2025-11-04",
+  "generated_on": "2025-11-07T14:35:57.720694",
+  "date": "2025-11-07",
   "todos": [
     {
       "category": "\ud83c\udf05 Morning Routine",
       "tasks": [
         {
-          "task": "Wake up by 7:00\u202fAM; 10\u2011min meditation",
+          "task": "Wake up by 7:00\u202fAM",
           "completed": false
         },
         {
-          "task": "Breakfast + 30\u202fg protein (paneer & curd) + 500\u202fml water",
+          "task": "15\u2011min meditation",
+          "completed": false
+        },
+        {
+          "task": "Breakfast + ~30\u202fg protein (1 cup cooked dal\u202f\u2248\u202f18\u202fg, 100\u202fg paneer\u202f\u2248\u202f14\u202fg, 250\u202fml milk\u202f\u2248\u202f8\u202fg)",
+          "completed": false
+        },
+        {
+          "task": "Drink 500\u202fml water",
           "completed": false
         }
       ]
@@ -19,19 +27,11 @@
       "category": "\ud83d\udcda Academic",
       "tasks": [
         {
-          "task": "Attend CN class 09:00\u201110:00",
+          "task": "Attend scheduled classes: DBMS 09:00\u201110:00, UI/UX 10:00\u201111:00, CG 12:00\u201113:00, CN A1 Lab 14:00\u201117:00",
           "completed": false
         },
         {
-          "task": "Attend ToC lecture 10:00\u201111:00",
-          "completed": false
-        },
-        {
-          "task": "Attend ToC tutorial 11:00\u201112:00",
-          "completed": false
-        },
-        {
-          "task": "Attend OC session 12:00\u201113:00 (DW PROJECT \u2013 high priority at 12:00)",
+          "task": "\ud83d\udd34 HIGH PRIORITY \u2013 Submit DW Project by 15:00",
           "completed": false
         }
       ]
@@ -40,11 +40,7 @@
       "category": "\ud83c\udfaf Learning",
       "tasks": [
         {
-          "task": "Machine Learning Roadmap \u2013 Optimization Theory (convex sets, gradient descent) \u2013 30\u202fmin",
-          "completed": false
-        },
-        {
-          "task": "Machine Learning Roadmap \u2013 Advanced Python (generators, type hinting) \u2013 30\u202fmin",
+          "task": "Roadmap study (Optimization Theory \u2013 convex sets, gradient descent, Lagrange multipliers\u202f+\u202fAdvanced Python \u2013 generators, context managers, type hinting, profiling) \u2013 60\u202fmin",
           "completed": false
         }
       ]
@@ -53,11 +49,11 @@
       "category": "\ud83d\udcaa Fitness",
       "tasks": [
         {
-          "task": "Pull workout (incl. dynamic warm\u2011up) \u2013 78\u202fmin",
+          "task": "Full\u2011Body Hypertrophy Circuit 17:30\u201118:50 (10\u202fmin dynamic warm\u2011up, 3\u00d715 kettlebell swings, 3\u00d710 dumbbell clean & press)",
           "completed": false
         },
         {
-          "task": "Post\u2011workout protein shake (\u224820\u202fg protein) + 500\u202fml water",
+          "task": "Post\u2011workout protein snack (250\u202fml milk + 30\u202fg soy protein powder) \u2248\u202f20\u202fg protein",
           "completed": false
         }
       ]
@@ -66,11 +62,15 @@
       "category": "\ud83c\udf19 Evening Routine",
       "tasks": [
         {
-          "task": "Dinner + 38\u202fg protein (dal, paneer, roti) + 500\u202fml water",
+          "task": "Dinner + ~38\u202fg protein (200\u202fg paneer curry\u202f\u2248\u202f28\u202fg, 1 cup dal\u202f\u2248\u202f10\u202fg) with vegetables",
           "completed": false
         },
         {
-          "task": "Social media \u226430\u202fmin; wind down; sleep by 11:00\u202fPM (target 6\u202fh)",
+          "task": "Social media \u2264\u202f30\u202fmin and drink 500\u202fml water",
+          "completed": false
+        },
+        {
+          "task": "Prepare for next day & lights out \u2013 Sleep by 23:00",
           "completed": false
         }
       ]
